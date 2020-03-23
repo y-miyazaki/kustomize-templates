@@ -1,4 +1,0 @@
-resources:
-  - service.yaml
-  - horizontalpodautoscaler.yaml
-  - deployment.yaml

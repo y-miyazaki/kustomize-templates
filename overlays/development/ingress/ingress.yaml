@@ -4,7 +4,29 @@ metadata:
   name: ingress
   annotations:
     kubernetes.io/ingress.class: nginx
-    ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    # nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # kubernetes.io/tls-acme: "true"
+    # certmanager.k8s.io/cluster-issuer: letsencrypt-staging
+    nginx.ingress.kubernetes.io/server-snippet: |
+      location = /favicon.ico {
+        access_log off;
+        log_not_found off;
+      }
+      location = /nginx_status {
+        stub_status on;
+        access_log off;
+        log_not_found off;
+      }
+      location = /apple-app-site-association {
+        access_log off;
+        log_not_found off;
+      }
+      location = /.well-known/apple-app-site-association {
+        access_log off;
+        log_not_found off;
+      }
 spec:
   rules:
     - http:
