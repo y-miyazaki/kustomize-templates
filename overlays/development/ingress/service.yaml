@@ -1,0 +1,24 @@
+---
+#--------------------------------------------------------------
+# Service
+#--------------------------------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: service
+spec:
+  type: ExternalName
+  # {service}.{namespace}.svc.cluster.local
+  externalName: nginx-service.nginx-app.svc.cluster.local
+---
+#--------------------------------------------------------------
+# Service
+#--------------------------------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: service1
+spec:
+  type: ExternalName
+  # {service}.{namespace}.svc.cluster.local
+  externalName: nginx1-service.nginx1-app.svc.cluster.local

@@ -1,0 +1,5 @@
+resources:
+  - service.yaml
+  - horizontalpodautoscaler.yaml
+  - deployment.yaml
+  - namespace.yaml
