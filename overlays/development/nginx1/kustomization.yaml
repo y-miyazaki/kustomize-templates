@@ -3,7 +3,7 @@ kind: Kustomization
 namePrefix: nginx1-
 namespace: nginx1-app
 commonLabels:
-  app: nginx1
+  app: nginx
   env: production
   project: "test"
 images:

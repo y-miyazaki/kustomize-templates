@@ -5,11 +5,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: service
+  name: svc1
 spec:
   type: ExternalName
   # {service}.{namespace}.svc.cluster.local
-  externalName: nginx-service.nginx-app.svc.cluster.local
+  externalName: nginx1-svc.nginx1-app.svc.cluster.local
+  # ports:
+  # - name: http
+  #   port: 80
 ---
 #--------------------------------------------------------------
 # Service
@@ -17,8 +20,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: service1
+  name: svc2
 spec:
   type: ExternalName
   # {service}.{namespace}.svc.cluster.local
-  externalName: nginx1-service.nginx1-app.svc.cluster.local
+  externalName: nginx2-svc.nginx2-app.svc.cluster.local
+
+  # ports:
+  # - name: http
+  #   port: 80
