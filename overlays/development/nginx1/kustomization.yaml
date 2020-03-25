@@ -11,7 +11,7 @@ images:
     newName: nginx
     newTag: 1.17.9-alpine
 bases:
-  - ../../../base/nginx
+  - ../../../base/default
 patchesStrategicMerge:
   - service.yaml
 resources:

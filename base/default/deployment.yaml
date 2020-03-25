@@ -1,7 +1,7 @@
 ---
 #--------------------------------------------------------------
 # Deployment
-# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+# https://kubernetes.io/ja/docs/concepts/workloads/controllers/deployment/
 #--------------------------------------------------------------
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -12,11 +12,15 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 3
-      maxUnavailable: 5
+      # 理想状態のPod数を超えて作成できる最大のPod数
+      maxSurge: 1
+      # 更新処理において利用不可となる最大のPod数
+      maxUnavailable: 1
   # PodTemplate, もし変更があるとRollingUpdateが開始される
   template:
     spec:
+      # 削除されるまでの猶予の時間。デフォルトは30秒
+      terminationGracePeriodSeconds: 60
       containers:
         - name: pod
           image: image:latest
@@ -29,21 +33,21 @@ spec:
               memory: 256Mi
           ports:
             - containerPort: 80
-          readinessProbe:
-            # an http probe
-            httpGet:
-              path: /healthcheck
-              port: 80
-              httpHeaders:
-                - name: X-Health-Check
-                  value: health-check
-            # Probe開始までの秒数
-            initialDelaySeconds: 30
-            # Probeの間隔を秒単位で指定する。デフォルトは10秒で最小の値は1秒
-            periodSeconds: 30
-            # Probeがタイムアウトするまでの秒数。デフォルトは1秒で最小の値は1秒
-            timeoutSeconds: 5
-            # Probeが失敗したと判断する最小回数を指定。デフォルトは3回
-            failureThreshold: 5
-            #
-            successThreshold: 1
+          # readinessProbe:
+          #   # an http probe
+          #   httpGet:
+          #     path: /healthcheck
+          #     port: 80
+          #     httpHeaders:
+          #       - name: X-Health-Check
+          #         value: health-check
+          #   # Probe開始までの秒数
+          #   initialDelaySeconds: 30
+          #   # Probeの間隔を秒単位で指定する。デフォルトは10秒で最小の値は1秒
+          #   periodSeconds: 30
+          #   # Probeがタイムアウトするまでの秒数。デフォルトは1秒で最小の値は1秒
+          #   timeoutSeconds: 5
+          #   # Probeが失敗したと判断する最小回数を指定。デフォルトは3回
+          #   failureThreshold: 5
+          #   # Probeが成功したと判断する最小回数を指定。デフォルトは1回
+          #   successThreshold: 1

@@ -5,6 +5,7 @@
 apiVersion: v1
 kind: Service
 metadata:
+  # svcという名前は含めること。DNSが引けなくなる。
   name: svc
 spec:
   type: NodePort

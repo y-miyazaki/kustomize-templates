@@ -10,9 +10,9 @@ spec:
   type: ExternalName
   # {service}.{namespace}.svc.cluster.local
   externalName: nginx1-svc.nginx1-app.svc.cluster.local
-  # ports:
-  # - name: http
-  #   port: 80
+  ports:
+  - name: http
+    port: 80
 ---
 #--------------------------------------------------------------
 # Service
@@ -25,7 +25,6 @@ spec:
   type: ExternalName
   # {service}.{namespace}.svc.cluster.local
   externalName: nginx2-svc.nginx2-app.svc.cluster.local
-
-  # ports:
-  # - name: http
-  #   port: 80
+  ports:
+  - name: http
+    port: 80
