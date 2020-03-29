@@ -1,0 +1,43 @@
+#--------------------------------------------------
+# CronJob
+#--------------------------------------------------
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cronjob
+spec:
+  schedule: ""
+  # Allow（default）：同時実行に対して制限を行わない
+  # Forbid：前のJobが終了していない場合は次のJobは実行しない（同時実行を行わない）
+  # Replace：前のJobをキャンセルし、新たにJobを開始する
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: cronjob
+            image: image:latest
+            imagePullPolicy: IfNotPresent
+            command:
+            - echo
+            args:
+            - This is template.  
+            resources:
+              requests:
+                cpu: 100m
+                memory: 64Mi
+              limits:
+                cpu: 100m
+                memory: 128Mi
+          restartPolicy: OnFailure
+          activeDeadlineSeconds: 60
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: beta.kubernetes.io/arch
+                    operator: In
+                    values:
+                    - amd64

@@ -1,0 +1,28 @@
+# cronjob schedule
+- op: replace
+  path: /spec/schedule
+  value: "*/1 * * * *"
+# cronjob command
+- op: replace
+  path: /spec/jobTemplate/spec/template/spec/containers/0/command/0
+  value: "echo"
+# cronjob arg
+- op: replace
+  path: /spec/jobTemplate/spec/template/spec/containers/0/args/0
+  value: "hello world"
+# # cronjob request cpu
+# - op: replace
+#   path: /spec/jobTemplate/spec/template/spec/containers/0/resources/requests/cpu
+#   value: 100m
+# # cronjob request memory
+# - op: replace
+#   path: /spec/jobTemplate/spec/template/spec/containers/0/resources/requests/memory
+#   value: 64Mi
+# # cronjob limit cpu
+# - op: replace
+#   path: /spec/jobTemplate/spec/template/spec/containers/0/resources/limits/cpu
+#   value: 200m
+# # cronjob limit memory
+# - op: replace
+#   path: /spec/jobTemplate/spec/template/spec/containers/0/resources/limits/memory
+#   value: 228Mi
