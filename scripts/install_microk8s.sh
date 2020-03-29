@@ -17,7 +17,7 @@ sudo ufw allow in on cni0 && sudo ufw allow out on cni0
 sudo ufw default allow routed
 
 # dashboard, dns
-sudo microk8s.enable dashboard dns ingress
+sudo microk8s.enable dashboard dns ingress storage
 
 # alias
 sudo snap alias microk8s.kubectl kubectl

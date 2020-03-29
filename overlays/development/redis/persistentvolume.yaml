@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-pv
+  namespace: redis
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  # ReadWriteOnce : 単一Nodeで読み書きが可能
+  # ReadOnlyMany : 複数Nodeで読み込みが可能
+  # ReadWriteMany : 複数Nodeから読み書きが可能
+  accessModes: [ "ReadWriteOnce" ]
+  # Retain or Delete
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: redis-local-storage
+  # いいドキュメントがあるのでよく見ること。そもそもローカルテスト時以外は各Cloudのストレージをマウントするから使わないと思う。
+  # https://qiita.com/sotoiwa/items/09d2f43a35025e7be782
+  hostPath:
+    path: /mnt/data
+  # for local
+  # local:
+  #   path: /data
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - sandboxk8s

@@ -1,0 +1,31 @@
+---
+#--------------------------------------------------------------
+# StatefulSet
+# https://kubernetes.io/ja/docs/concepts/workloads/controllers/statefulset/
+#--------------------------------------------------------------
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: statefulset
+spec:
+  replicas: 1
+  updateStrategy:
+    # RollingUpdate or OnDelete。Default: RollingUpdate
+    type: RollingUpdate
+  serviceName: svc
+  template:
+    spec:
+      # 削除されるまでの猶予の時間。デフォルトは30秒
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: pod
+          image: image:latest
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 100m
+              memory: 256Mi
+          # ports:
+          #   - containerPort: 80

@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namePrefix: redis-
+namespace: redis
+commonLabels:
+  app: redis
+  env: production
+  project: "test"
+images:
+  - name: image
+    newName: redis
+    newTag: 6.0-rc2-alpine
+bases:
+  - ../../../base/statefulset
+patchesStrategicMerge:
+  - service.yaml
+  - statefulset.yaml
+resources:
+  - namespace.yaml
+  - storageclass.yaml
+  - persistentvolume.yaml
+patchesJson6902:
+  - path: patch-namespace.yaml
+    target:
+      group: ""
+      kind: Namespace
+      name: redis
+      version: v1
