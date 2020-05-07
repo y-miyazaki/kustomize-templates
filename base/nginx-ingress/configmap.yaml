@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap
+data:
+  log-format-escape-json: "true"
+  # https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/log-format/
+  # 
+  log-format-upstream: '{
+    "timestamp": "$time_iso8601",
+    "request_id": "$req_id",
+    "upStream": {
+      "upstreamStatus": "$upstream_status",
+      "upstreamAddr": "$upstream_addr",
+      "upstreamConnectTime": "$upstream_connect_time ms",
+      "upstreamHeaderTime": "$upstream_header_time ms"
+      "upstreamResponseTime": "$upstream_response_time ms",
+      "proxyUpstreamName": "$proxy_upstream_name"
+    },
+    "httpRequest": {
+      "xAmazonTraceId": "$http_x_amzn_trace_id",
+      "xCloudTraceContext": "$http_x_trace_context",
+      "xAzureRef": "$http_x_azure_ref",
+      "requestMethod": "$request_method",
+      "requestUrl": "$scheme://$host$request_uri",
+      "status": $status,
+      "requestSize": "$request_length",
+      "responseSize": "$upstream_response_length",
+      "userAgent": "$http_user_agent",
+      "remoteAddr": "$remote_addr",
+      "xForwardFor": "$proxy_add_x_forwarded_for",
+      "httpReferer": "$http_referer",
+      "latency": "$upstream_response_time s",
+      "requestProtocol": "$server_protocol"
+    }
+  }'
+  server-tokens: "false"
+  forwarded-for-header: "X-Forwarded-For"
+  server-snippet: |
+      location = /favicon.ico {
+        empty_gif;
+        access_log off;
+        log_not_found off;
+      }
+      location = /sitemap.xml {
+        access_log off;
+        log_not_found off;
+      }
+      location = /browserconfig.xml {
+        access_log off;
+        log_not_found off;
+      }
+      location = /humans.txt {
+        access_log off;
+        log_not_found off;
+      }
+      location = /nginx_status {
+        stub_status on;
+        access_log off;
+        log_not_found off;
+      }
+      location = /apple-app-site-association {
+        access_log off;
+        log_not_found off;
+      }
+      location = /.well-known/apple-app-site-association {
+        access_log off;
+        log_not_found off;
+      }
+      location = /apple-touch-icon.png {
+        access_log off;
+        log_not_found off;
+      }
+      location = /apple-touch-icon-precomposed.png {
+        access_log off;
+        log_not_found off;
+      }
+      location = /apple-touch-icon-152×152.png {
+        access_log off;
+        log_not_found off;
+      }
+      location = /apple-touch-icon-144×144.png {
+        access_log off;
+        log_not_found off;
+      }
+      location = /apple-touch-icon-120×120.png {
+        access_log off;
+        log_not_found off;
+      }
+      location = /apple-touch-icon-114×114.png {
+        access_log off;
+        log_not_found off;
+      }
+      location = /apple-touch-icon-76×76.png {
+        access_log off;
+        log_not_found off;
+      }
+      location = /apple-touch-icon-72×72.png {
+        access_log off;
+        log_not_found off;
+      }
