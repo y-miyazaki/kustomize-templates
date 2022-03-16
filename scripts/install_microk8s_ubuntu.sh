@@ -3,6 +3,7 @@
 VERSION=${1:-1.14}
 
 USER=$(whoami)
+
 # document.
 # https://ubuntu.com/tutorials/install-a-local-kubernetes-with-microk8s#2-deploying-microk8s
 # need to set classic mode.

@@ -1,0 +1,32 @@
+---
+#--------------------------------------------------------------
+# Deployment
+# https://kubernetes.io/ja/docs/concepts/workloads/controllers/deployment/
+#--------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-dns
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: external-dns
+      annotations:
+        iam.amazonaws.com/role: ${External-DNS-Controller-Arn}
+    spec:
+      serviceAccountName: external-dns
+      containers:
+      - name: external-dns
+        image: registry.opensource.zalan.do/teapot/external-dns:latest
+        args:
+        - --source=service
+        - --source=ingress
+        - --domain-filter=example.com
+        - --aws-zone-type=public
+        - --provider=aws
+        - --policy=sync
+        - --registry=txt
+        - --txt-owner-id=example-identifier

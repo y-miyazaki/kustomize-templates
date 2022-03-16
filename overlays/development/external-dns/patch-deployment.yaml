@@ -1,0 +1,13 @@
+# external dns role arn
+# http://jsonpatch.com/
+- op: replace
+  path: /spec/template/metadata/annotations/iam.amazonaws.com~1role
+  value: "your-arn"
+# domain filter
+- op: replace
+  path: /spec/template/spec/containers/args/2
+  value: "--domain-filter=ymiyazakixyz.link"
+# zone: private or public
+- op: replace
+  path: /spec/template/spec/containers/args/3
+  value: "--aws-zone-type=public"
