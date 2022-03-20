@@ -7,7 +7,6 @@
   metadata:
     name: external-dns
     namespace: kube-system
-  ---
   apiVersion: rbac.authorization.k8s.io/v1beta1
   kind: ClusterRole
   metadata:
@@ -25,7 +24,6 @@
   - apiGroups: [""]
     resources: ["nodes"]
     verbs: ["list","watch"]
-  ---
   apiVersion: rbac.authorization.k8s.io/v1beta1
   kind: ClusterRoleBinding
   metadata:

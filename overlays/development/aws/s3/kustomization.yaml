@@ -3,20 +3,14 @@ kind: Kustomization
 #--------------------------------------------------
 # Change value
 #--------------------------------------------------
-namePrefix: base-nginx1-
+namePrefix: base-
 namespace: base-app
 commonLabels:
-  app: nginx
+  app: s3
   env: production
   project: "test"
-images:
-  - name: image
-    newName: nginx
-    newTag: 1.21.6-alpine
 #--------------------------------------------------
 # Base
 #--------------------------------------------------
 bases:
-  - ../../../base/deployment
-patchesStrategicMerge:
-  - service.yaml
+  - ../../../../base/aws/s3

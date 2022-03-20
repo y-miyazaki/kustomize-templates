@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: base-nginx-ingress
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: base-app
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: base-redis

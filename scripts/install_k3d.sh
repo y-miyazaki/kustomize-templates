@@ -1,29 +1,24 @@
 #/bin/bash
 #--------------------------------------------------------------
-# Minikube
-# https://minikube.sigs.k8s.io/
+# k3d
+# https://github.com/k3d-io/k3d
 #--------------------------------------------------------------
+K3D_VERSION=v5.0.0
 
 #--------------------------------------------------------------
-# Variable
-#--------------------------------------------------------------
-MINIKUBE_VERSION=v1.18.1
-
-#--------------------------------------------------------------
-# minikube for mac
-# https://minikube.sigs.k8s.io/docs/start/
+# k3d
+# https://github.com/k3d-io/k3d
 #--------------------------------------------------------------
 echo -e -n "#-----------------------------------------\n"
-echo -e -n "# Install: minikube\n"
+echo -e -n "# Install: k3d\n"
 echo -e -n "#-----------------------------------------\n"
-curl -LO https://github.com/kubernetes/minikube/releases/download/${MINIKUBE_VERSION}/minikube-darwin-amd64
-sudo install minikube-darwin-amd64 /usr/local/bin/minikube
-rm -rf minikube-darwin-amd64
+curl https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=${K3D_VERSION} bash
+k3d completion bash > /usr/local/etc/bash_completion.d/k3d
 
 #--------------------------------------------------------------
 # Version
 #--------------------------------------------------------------
 echo -e -n "#-----------------------------------------\n"
-echo -e -n "# Version: minikube \n"
+echo -e -n "# Version: k3d \n"
 echo -e -n "#-----------------------------------------\n"
-minikube version
+k3d version

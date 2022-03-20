@@ -1,0 +1,43 @@
+---
+#--------------------------------------------------------------
+# Deployment for mysql
+# https://kubernetes.io/ja/docs/concepts/workloads/controllers/deployment/
+#--------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - image: mysql:latest
+          name: mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: root_password
+          volumeMounts:
+            - name: config-mysql
+              mountPath: /docker-entrypoint-initdb.d/create_databases.sql
+              subPath: create_databases.sql
+            - name: data-mysql
+              mountPath: /var/lib/mysql
+          ports:
+            - containerPort: 3306
+              name: mysql
+      volumes:
+        - name: config-mysql
+          configMap:
+            name: mysql
+        - name: data-mysql
+          hostPath:
+            path: "/data/mysql"

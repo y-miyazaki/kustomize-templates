@@ -10,9 +10,9 @@ commonLabels:
   env: production
   project: "test"
 images:
-  - name: image
+  - name: alpine
     newName: alpine
-    newTag: 3.11.5
+    newTag: 3.15.1
 #--------------------------------------------------
 # Base
 #--------------------------------------------------

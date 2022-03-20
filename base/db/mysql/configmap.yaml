@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql
+data:
+  create_databases.sql: |
+    CREATE USER 'test_user'@'%' IDENTIFIED BY 'test_password';
+
+    CREATE DATABASE IF NOT EXISTS test DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    GRANT ALL ON test.* TO 'test_user'@'%';
+
+    FLUSH PRIVILEGES;

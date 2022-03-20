@@ -3,20 +3,23 @@ kind: Kustomization
 #--------------------------------------------------
 # Change value
 #--------------------------------------------------
-namePrefix: base-nginx1-
-namespace: base-app
 commonLabels:
-  app: nginx
+  app: cronjob
   env: production
   project: "test"
 images:
-  - name: image
-    newName: nginx
-    newTag: 1.21.6-alpine
+  - name: alpine
+    newName: alpine
+    newTag: 3.15.1
 #--------------------------------------------------
 # Base
 #--------------------------------------------------
 bases:
-  - ../../../base/deployment
-patchesStrategicMerge:
-  - service.yaml
+  - ../../../base/aws/external_dns
+patchesJson6902:
+  - target:
+    group: ""
+    version: v1
+    kind: Deployment
+    name: external-dns
+  path: patch-deployment.yaml

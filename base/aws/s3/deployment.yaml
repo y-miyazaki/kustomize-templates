@@ -1,0 +1,28 @@
+---
+#--------------------------------------------------------------
+# Deployment for minio
+# https://kubernetes.io/ja/docs/concepts/workloads/controllers/deployment/
+#--------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: s3
+spec:
+  selector:
+    matchLabels:
+      app: s3
+  template:
+    metadata:
+      labels:
+        app: s3
+    spec:
+      containers:
+        - image: minio/minio
+          name: s3
+          command: ["/bin/sh","-c"]
+          args: ["mkdir -p /data/bucket; /usr/bin/docker-entrypoint.sh server /data --console-address ':9001'"]
+          ports:
+            - containerPort: 9000
+              name: s3-api
+            - containerPort: 9001
+              name: s3-dashboard

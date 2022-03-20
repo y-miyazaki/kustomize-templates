@@ -1,0 +1,12 @@
+apiVersion: skaffold/v2beta11
+kind: Config
+metadata:
+  name: kustomize-templates
+deploy:
+  kustomize:
+    paths:
+    - overlays/development/namespace
+    - overlays/development/nginx1
+    - overlays/development/nginx2
+    - overlays/development/aws/s3
+    - overlays/development/db/mysql
