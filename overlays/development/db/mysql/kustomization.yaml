@@ -19,4 +19,4 @@ images:
 bases:
   - ../../../../base/db/mysql
 patchesStrategicMerge:
-  - configmap.yaml
+  - patch-configmap.yaml
