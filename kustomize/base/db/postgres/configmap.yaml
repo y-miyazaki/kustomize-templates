@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres
+data:
+  create_databases.sql: |
+    CREATE USER test_user WITH PASSWORD 'test_password';
+    CREATE DATABASE 'test' OWNER = 'test_user' TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'C' LC_CTYPE = 'C';
+    GRANT ALL PRIVILEGES ON DATABASE 'test' to 'test_user';

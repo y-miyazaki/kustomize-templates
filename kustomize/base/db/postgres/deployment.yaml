@@ -1,0 +1,53 @@
+---
+#--------------------------------------------------------------
+# Deployment for postgres
+# https://kubernetes.io/ja/docs/concepts/workloads/controllers/deployment/
+#--------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - image: postgres:latest
+          name: postgres
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: postgres_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: postgres_password
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: pg_password
+          volumeMounts:
+            - name: config-postgres
+              mountPath: /docker-entrypoint-initdb.d/create_databases.sql
+              subPath: create_databases.sql
+            - name: data-postgres
+              mountPath: /var/lib/postgresql
+          ports:
+            - containerPort: 5432
+              name: postgres
+      volumes:
+        - name: config-postgres
+          configMap:
+            name: postgres
+        - name: data-postgres
+          hostPath:
+            path: "/data/postgres"

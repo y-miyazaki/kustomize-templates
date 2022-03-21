@@ -60,15 +60,11 @@ delete-dashboard:
 start:
 	k3d cluster start $(CLUSTER_NAME)
 
-.PHONY: dev
-dev:
-	skaffold dev --tail --skip-tests=true --status-check=false --default-repo $(DEFAULT_REPO)
-
 .PHONY: down
 down:
 	k3d cluster stop $(CLUSTER_NAME)
 
-.PHONY: destroy
-destroy:
+.PHONY: delete
+delete:
 	k3d cluster delete $(CLUSTER_NAME)
 	

@@ -1,0 +1,18 @@
+---
+#--------------------------------------------------------------
+# Service for postgres
+# https://kubernetes.io/ja/docs/concepts/services-networking/service/
+#--------------------------------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  type: NodePort
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+      nodePort: 30432

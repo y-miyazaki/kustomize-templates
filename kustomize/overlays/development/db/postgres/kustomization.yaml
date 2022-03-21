@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+#--------------------------------------------------
+# Change value
+#--------------------------------------------------
+namePrefix: base-
+namespace: base-app
+commonLabels:
+  app: postgres
+  env: production
+  project: "test"
+images:
+  - name: postgres
+    # newName: postgres
+    newTag: "14.2-alpine"
+#--------------------------------------------------
+# Base
+#--------------------------------------------------
+bases:
+  - ../../../../base/db/postgres
+patchesStrategicMerge:
+  - patch-configmap.yaml
