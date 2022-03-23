@@ -1,4 +1,5 @@
 #/bin/bash
+set -e
 #--------------------------------------------------------------
 # microk8s
 # https://microk8s.io/
@@ -38,23 +39,9 @@ sudo microk8s.enable dashboard dns ingress storage
 sudo snap alias microk8s.kubectl kubectl
 
 #--------------------------------------------------------------
-# stern
-#--------------------------------------------------------------
-STERN_VERSION=$(curl --silent "https://api.github.com/repos/wercker/stern/releases/latest" |  grep '"tag_name":' |  sed -E 's/.*"(v?[^"]+)".*/\1/' )
-sudo curl -LO https://github.com/wercker/stern/releases/download/${STERN_VERSION}/stern_linux_amd64
-sudo mv stern_linux_amd64 /usr/local/bin/stern
-sudo chmod +x /usr/local/bin/stern
-
-#--------------------------------------------------------------
 # kube config
 #--------------------------------------------------------------
 sudo kubectl config view --raw | sudo tee ${HOME}/.kube/config
-
-#--------------------------------------------------------------
-# skaffold
-#--------------------------------------------------------------
-curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
-sudo install skaffold /usr/local/bin/
 
 echo "# ------------------------------------------------------------------------"
 echo "# dashboard"
