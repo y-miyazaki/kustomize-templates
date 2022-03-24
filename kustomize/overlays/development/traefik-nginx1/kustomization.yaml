@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+#--------------------------------------------------
+# Change value
+#--------------------------------------------------
+namespace: base-app
+commonLabels:
+  app: nginx1
+  env: production
+  project: test
+resources:
+  - ingress.yaml

@@ -22,7 +22,7 @@ Usage:
     $(basename "${0}") -c your-cluster-name
 
 Options:
-    -c {cluter name}               Specify the name of the kubernetes cluster.
+    -c {cluter name}               Specify the name of the kubernetes cluster.(kubectl config get-contexts)
 EOF
     exit 1
 }
@@ -47,6 +47,13 @@ if [ -z "$(command -v curl)" ]; then
 fi
 
 #--------------------------------------------------------------
+# check argument
+#--------------------------------------------------------------
+if [ -z "${CLUSTER_NAME}" ]; then
+    usage "This command need to set cluster_name."
+fi
+
+#--------------------------------------------------------------
 # Check OS
 #--------------------------------------------------------------
 if [ "$(uname)" == 'Darwin' ]; then
@@ -63,38 +70,43 @@ else
 fi
 
 # Install: ArgoCD for kubernetes
-echo "#-----------------------------------------"
-echo "# Install: ArgoCD. "
-echo "#-----------------------------------------"
+# echo ""
+# echo "#-----------------------------------------"
+# echo "# Install: ArgoCD. "
+# echo "#-----------------------------------------"
 kubectl create namespace argocd
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+kubectl apply -n argocd -f config/argocd-install.yaml
 
 # Install: ArgoCD CLI
+echo ""
 echo "#-----------------------------------------"
 echo "# Install: ArgoCD CLI. "
 echo "#-----------------------------------------"
-if [ "${OS}" == "Linux" ]; then
-    # https://argo-cd.readthedocs.io/en/stable/cli_installation/
-    curl -SL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
-    chmod +x /usr/local/bin/argocd
-elif [ "${OS}" == "Mac" ]; then
-    VERSION=$(curl --silent "https://api.github.com/repos/argoproj/argo-cd/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
-    curl -SL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/$VERSION/argocd-darwin-amd64
-    chmod +x /usr/local/bin/argocd
-else
-    exit 1
+if [ -z "$(command -v argocd)" ]; then
+    if [ "${OS}" == "Linux" ]; then
+        # https://argo-cd.readthedocs.io/en/stable/cli_installation/
+        curl -SL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+        chmod +x /usr/local/bin/argocd
+    elif [ "${OS}" == "Mac" ]; then
+        VERSION=$(curl --silent "https://api.github.com/repos/argoproj/argo-cd/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+        curl -SL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/$VERSION/argocd-darwin-amd64
+        chmod +x /usr/local/bin/argocd
+    else
+        exit 1
+    fi
 fi
-
 # add cluster
+echo ""
 echo "#-----------------------------------------"
 echo "# Cluster add to ArgoCD. "
 echo "#-----------------------------------------"
 argocd cluster add ${CLUSTER_NAME} -y
 
 # get initial admin password
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+echo ""
 echo "#-----------------------------------------"
-echo "# If you want to change the admin password using the command. "
+echo "# ArgoCD admin secret"
+echo "# kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath=\"{.data.password}\" | base64 -d;"
+echo "# Note: If you want to change the admin password using the command. "
+echo "# argocd account update-password"
 echo "#-----------------------------------------"
-echo "argocd account update-password"

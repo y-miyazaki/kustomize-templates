@@ -1,4 +1,4 @@
-apiVersion: skaffold/v2beta11
+apiVersion: skaffold/v2beta1
 kind: Config
 metadata:
   name: kustomize-templates
@@ -8,6 +8,9 @@ deploy:
     - kustomize/overlays/development/namespace
     - kustomize/overlays/development/nginx1
     - kustomize/overlays/development/nginx2
-    - kustomize/overlays/development/aws/s3
-    - kustomize/overlays/development/db/mysql
-    - kustomize/overlays/development/db/postgres
+    # - kustomize/overlays/development/aws/s3
+    # - kustomize/overlays/development/db/mysql
+    # - kustomize/overlays/development/db/postgres
+    # - kustomize/overlays/development/argocd
+    - kustomize/overlays/development/traefik-argocd
+    - kustomize/overlays/development/traefik-nginx1

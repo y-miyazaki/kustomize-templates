@@ -7,10 +7,10 @@ kind: Simple # internally, we also have a Cluster config, which is not yet avail
 name: local-cluster # name that you want to give to your cluster (will still be prefixed with `k3d-`)
 servers: 1 # same as `--servers 1`
 agents: 1 # same as `--agents 2`
-# kubeAPI: # same as `--api-port myhost.my.domain:6445` (where the name would resolve to 127.0.0.1)
+kubeAPI: # same as `--api-port myhost.my.domain:6445` (where the name would resolve to 127.0.0.1)
 #   host: "myhost.my.domain" # important for the `server` setting in the kubeconfig
 #   hostIP: "127.0.0.1" # where the Kubernetes API will be listening on
-#   hostPort: "6445" # where the Kubernetes API listening port will be mapped to on your host system
+  hostPort: "6445" # where the Kubernetes API listening port will be mapped to on your host system
 
 # https://hub.docker.com/r/rancher/k3s/tags
 image: rancher/k3s:v1.20.15-k3s1 # same as `--image rancher/k3s:v1.20.4-k3s1`
@@ -23,13 +23,15 @@ volumes: # repeatable flags are represented as YAML lists
       - server:0
       - agent:*
 ports:
-  - port: 30000-31000:30000-31000 # same as `--port '30000-30300:30000-30300@server:0'`
+  - port: 30000-31000:30000-31000 # same as `--port '30000-31000:30000-31000@server:0'`
     nodeFilters:
       - server:0
+  - port: 8081:80 # same as `--port '8081:80 @loadbalancer'`
+    nodeFilters:
+      - loadbalancer
 # env:
 #   - envVar: bar=baz # same as `--env 'bar=baz@server:0'`
 #     nodeFilters:
-#       - server:0
 registries: # define how registries should be created or used
   create: # creates a default registry to be used with the cluster; same as `--registry-create registry.localhost`
     name: registry.localhost

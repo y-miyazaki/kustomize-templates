@@ -14,9 +14,10 @@ K3D_VERSION=v5.0.0
 echo  "#-----------------------------------------"
 echo  "# Install: k3d"
 echo  "#-----------------------------------------"
-curl https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=${K3D_VERSION} bash
-k3d completion bash > /usr/local/etc/bash_completion.d/k3d
-
+if [ -z "$(command -v k3d)" ]; then
+    curl https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=${K3D_VERSION} bash
+    k3d completion bash > /usr/local/etc/bash_completion.d/k3d
+fi
 #--------------------------------------------------------------
 # Version
 #--------------------------------------------------------------

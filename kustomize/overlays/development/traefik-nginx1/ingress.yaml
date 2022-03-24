@@ -1,0 +1,24 @@
+---
+#--------------------------------------------------
+# Ingress
+# https://kubernetes.io/docs/concepts/services-networking/ingress/
+#--------------------------------------------------
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx1-ingress
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  # echo 127.0.0.1 nginx1.local >> /etc/hosts
+  - host: nginx1.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: base-nginx1-svc
+            port:
+              number: 8081

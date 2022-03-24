@@ -1,0 +1,24 @@
+---
+#--------------------------------------------------
+# Ingress
+# https://kubernetes.io/docs/concepts/services-networking/ingress/
+#--------------------------------------------------
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argo-cd-ingress
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  # echo 127.0.0.1 argocd-server.local >> /etc/hosts
+  - host: argocd-server.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: argocd-server
+            port:
+              number: 80

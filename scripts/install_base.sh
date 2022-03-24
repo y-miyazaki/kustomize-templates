@@ -35,11 +35,11 @@ else
   exit 1
 fi
 
-
 #--------------------------------------------------------------
 # kubectl
 # https://kubernetes.io/docs/tasks/tools/
 #--------------------------------------------------------------
+echo ""
 echo  "#-----------------------------------------"
 echo  "# Install: kubectl"
 echo  "#-----------------------------------------"
@@ -47,6 +47,7 @@ if [ "${OS}" == "Linux" ]; then
     curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl
     chmod +x ./kubectl
     sudo mv ./kubectl /usr/local/bin/kubectl
+    echo 'source <(kubectl completion bash)' >>~/.bashrc
 elif [ "${OS}" == "Mac" ]; then
     curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/darwin/amd64/kubectl"
     curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/darwin/amd64/kubectl.sha256"
@@ -55,6 +56,7 @@ elif [ "${OS}" == "Mac" ]; then
     sudo mv ./kubectl /usr/local/bin/kubectl
     sudo chown root: /usr/local/bin/kubectl
     rm -rf kubectl.sha256
+    echo 'source <(kubectl completion bash)' >>~/.bashrc
 else
     exit 1
 fi
@@ -63,6 +65,7 @@ fi
 # skaffold 
 # https://skaffold.dev/docs/install/
 #--------------------------------------------------------------
+echo ""
 echo  "#-----------------------------------------"
 echo  "# Install: skaffold"
 echo  "#-----------------------------------------"
@@ -79,6 +82,7 @@ fi
 # container-structure-test 
 # https://github.com/GoogleContainerTools/container-structure-test#installation
 #--------------------------------------------------------------
+echo ""
 echo  "#-----------------------------------------"
 echo  "# Install: container-structure-test"
 echo  "#-----------------------------------------"
@@ -94,6 +98,7 @@ fi
 # helm
 # https://helm.sh/docs/intro/install/
 #--------------------------------------------------------------
+echo ""
 echo  "#-----------------------------------------"
 echo  "# Install: helm"
 echo  "#-----------------------------------------"
@@ -109,6 +114,7 @@ fi
 # stern 
 # https://github.com/wercker/stern
 #--------------------------------------------------------------
+echo ""
 echo  "#-----------------------------------------"
 echo  "# Install: stern"
 echo  "#-----------------------------------------"
@@ -127,22 +133,27 @@ fi
 #--------------------------------------------------------------
 # Version
 #--------------------------------------------------------------
+echo ""
 echo  "#-----------------------------------------"
 echo  "# Version: kubectl "
 echo  "#-----------------------------------------"
 kubectl version --client
+echo ""
 echo  "#-----------------------------------------"
 echo  "# Version: skaffold "
 echo  "#-----------------------------------------"
 skaffold version
+echo ""
 echo  "#-----------------------------------------"
 echo  "# Version: container-structure-test "
 echo  "#-----------------------------------------"
 container-structure-test version
+echo ""
 echo  "#-----------------------------------------"
 echo  "# Version: helm "
 echo  "#-----------------------------------------"
 helm version
+echo ""
 echo  "#-----------------------------------------"
 echo  "# Version: stern "
 echo  "#-----------------------------------------"
