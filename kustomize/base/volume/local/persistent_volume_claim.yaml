@@ -1,0 +1,16 @@
+---
+#--------------------------------------------------------------
+# PersistentVolumeClaim for hostpath
+# https://kubernetes.io/ja/docs/concepts/storage/persistent-volumes/
+#--------------------------------------------------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc
+spec:
+  storageClassName: local-storage-class
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

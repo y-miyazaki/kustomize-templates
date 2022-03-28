@@ -9,6 +9,7 @@ metadata:
   name: argo-cd-ingress
   annotations:
     ingress.kubernetes.io/ssl-redirect: "false"
+    ingress.kubernetes.io/ssl-passthrough: "true"
 spec:
   rules:
   # echo 127.0.0.1 argocd-server.local >> /etc/hosts

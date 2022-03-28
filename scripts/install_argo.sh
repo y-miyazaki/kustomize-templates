@@ -7,50 +7,12 @@
 #--------------------------------------------------------------
 # usage function
 #--------------------------------------------------------------
-function usage () {
-    RED='\033[0;31m'
-    NC='\033[0m' # No Color
-    if [ -n "${1}" ]; then
-        printf "%b%s%b" "${RED}" "${1}" "${NC}"
-    fi
-    cat <<EOF
-
-Script for initial setting of ArgoCD.
-
-Usage:
-    $(basename "${0}") [<options>]
-    $(basename "${0}") -c your-cluster-name
-
-Options:
-    -c {cluter name}               Specify the name of the kubernetes cluster.(kubectl config get-contexts)
-EOF
-    exit 1
-}
-
-while getopts c:h opt
-do
-    case $opt in
-        c ) CLUSTER_NAME=$OPTARG ;;
-        h ) usage ;;
-        \? ) usage ;;
-    esac
-done
 
 #--------------------------------------------------------------
 # check command
 #--------------------------------------------------------------
-if [ -z "$(command -v kubectl)" ]; then
-    usage "This command need to install \"kubectl\"."
-fi
 if [ -z "$(command -v curl)" ]; then
     usage "This command need to install \"curl\"."
-fi
-
-#--------------------------------------------------------------
-# check argument
-#--------------------------------------------------------------
-if [ -z "${CLUSTER_NAME}" ]; then
-    usage "This command need to set cluster_name."
 fi
 
 #--------------------------------------------------------------
@@ -68,14 +30,6 @@ else
   echo "Your platform ($(uname -a)) is not supported."
   exit 1
 fi
-
-# Install: ArgoCD for kubernetes
-# echo ""
-# echo "#-----------------------------------------"
-# echo "# Install: ArgoCD. "
-# echo "#-----------------------------------------"
-kubectl create namespace argocd
-kubectl apply -n argocd -f config/argocd-install.yaml
 
 # Install: ArgoCD CLI
 echo ""
@@ -98,15 +52,39 @@ fi
 # add cluster
 echo ""
 echo "#-----------------------------------------"
-echo "# Cluster add to ArgoCD. "
+echo "# Register A Cluster To Deploy Apps To (Optional)"
+echo "# This step registers a cluster's credentials to Argo CD, and is only necessary when deploying to"
+echo "# an external cluster. When deploying internally (to the same cluster that Argo CD is running in),"
+echo "# https://kubernetes.default.svc should be used as the application's K8s API server address."
+echo "# First list all clusters contexts in your current kubeconfig:"
+echo "#"
+echo "#    kubectl config get-contexts -o name"
+echo "#"
+echo "# Choose a context name from the list and supply it to argocd cluster add CONTEXTNAME. For example, for docker-desktop context, run:"
+echo "#"
+echo "#    argocd cluster add docker-desktop -y"
 echo "#-----------------------------------------"
-argocd cluster add ${CLUSTER_NAME} -y
 
-# get initial admin password
 echo ""
 echo "#-----------------------------------------"
-echo "# ArgoCD admin secret"
-echo "# kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath=\"{.data.password}\" | base64 -d;"
-echo "# Note: If you want to change the admin password using the command. "
-echo "# argocd account update-password"
+echo "# Login Using The CLI"
+echo "# The initial password for the admin account is auto-generated and stored as clear text in the field"
+echo "# password in a secret named argocd-initial-admin-secret in your Argo CD installation namespace."
+echo "# You can simply retrieve this password using kubectl:"
+echo "#"
+echo "#    kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath=\"{.data.password}\" | base64 -d;"
+echo "# "
+echo "# Change the password using the command:"
+echo "#"
+echo "#    argocd account update-password"
+echo "#-----------------------------------------"
+
+echo ""
+echo "#-----------------------------------------"
+echo "# ArgoCD login"
+echo "#"
+echo "#     argocd --insecure login {your argocd server domain} --grpc-web "
+echo "#     ex) argocd --insecure login argocd-server.local:8081 --grpc-web "
+echo "#"
+echo "# Note: Check after ArgoCD is activated."
 echo "#-----------------------------------------"

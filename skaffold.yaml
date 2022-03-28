@@ -5,12 +5,15 @@ metadata:
 deploy:
   kustomize:
     paths:
-    - kustomize/overlays/development/namespace
-    - kustomize/overlays/development/nginx1
-    - kustomize/overlays/development/nginx2
-    # - kustomize/overlays/development/aws/s3
-    # - kustomize/overlays/development/db/mysql
-    # - kustomize/overlays/development/db/postgres
-    # - kustomize/overlays/development/argocd
-    - kustomize/overlays/development/traefik-argocd
-    - kustomize/overlays/development/traefik-nginx1
+    - kustomize/overlays/dev/namespace
+    # for ArgoCD
+    # - kustomize/overlays/dev/argocd
+    # - kustomize/overlays/dev/traefik-argocd
+    # examples
+    # - kustomize/overlays/dev/traefik-nginx1
+    # - kustomize/overlays/dev/nginx1
+    # - kustomize/overlays/dev/nginx2
+    - kustomize/overlays/dev/db/mysql
+    # - kustomize/overlays/dev/db/postgres
+    - kustomize/overlays/dev/aws/s3
+    - kustomize/overlays/dev/volume

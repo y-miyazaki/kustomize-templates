@@ -26,3 +26,15 @@ spec:
               name: s3-api
             - containerPort: 9001
               name: s3-dashboard
+          env:
+            - name: MINIO_ROOT_USER
+              value: minioroot
+            - name: MINIO_ROOT_PASSWORD
+              value: minioroot
+          volumeMounts:
+            - name: data-s3
+              mountPath: /data
+      volumes:
+        - name: data-s3
+          hostPath:
+            path: "/data/s3"

@@ -1,0 +1,14 @@
+
+
+---
+#--------------------------------------------------------------
+# StorageClass
+# https://kubernetes.io/ja/docs/concepts/storage/persistent-volumes/
+#--------------------------------------------------------------
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-storage-class
+# https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer

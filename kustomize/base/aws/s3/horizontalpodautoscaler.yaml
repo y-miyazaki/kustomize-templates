@@ -5,13 +5,13 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: hpa
+  name: s3
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: s3
-  minReplicas: 2
+  minReplicas: 1
   maxReplicas: 3
   metrics:
     - type: Resource
