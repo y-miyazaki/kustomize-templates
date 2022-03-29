@@ -9,14 +9,6 @@
 # k3d
 CLUSTER_NAME=local-cluster
 VOLUME=$(HOME)/k3d/data
-# registry(base container)
-REGISTRY_IMAGE=registry:2
-REGISTRY_HOST=registry.local
-REGISTRY_PORT=5000
-REGISTRY_VOLUME=local_registry_volume
-DEFAULT_REPO="$(REGISTRY_HOST):$(REGISTRY_PORT)"
-SERVERS=1
-AGENTS=3
 
 # dashboard
 # https://github.com/kubernetes/dashboard
@@ -60,8 +52,8 @@ delete-dashboard:
 start:
 	k3d cluster start $(CLUSTER_NAME)
 
-.PHONY: down
-down:
+.PHONY: stop
+stop:
 	k3d cluster stop $(CLUSTER_NAME)
 
 .PHONY: delete

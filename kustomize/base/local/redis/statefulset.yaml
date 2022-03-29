@@ -6,73 +6,129 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: redis
+  name: redis-master
+  labels:
+    app: redis
+    role: master
 spec:
   serviceName: redis
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: redis
+      role: master
   template:
     metadata:
       labels:
         app: redis
+        role: master
     spec:
       initContainers:
       - name: config
-        image: redis:6.2.3-alpine
-        command: [ "sh", "-c" ]
-        args:
-          - |
-            cp /tmp/redis/redis.conf /etc/redis/redis.conf
-            
-            echo "finding master..."
-            MASTER_FDQN=`hostname  -f | sed -e 's/redis-[0-9]\./redis-0./'`
-            if [ "$(redis-cli -h sentinel -p 5000 ping)" != "PONG" ]; then
-              echo "master not found, defaulting to redis-0"
-
-              if [ "$(hostname)" == "redis-0" ]; then
-                echo "this is redis-0, not updating config..."
-              else
-                echo "updating redis.conf..."
-                echo "slaveof $MASTER_FDQN 6379" >> /etc/redis/redis.conf
-              fi
-            else
-              echo "sentinel found, finding master"
-              MASTER="$(redis-cli -h sentinel -p 5000 sentinel get-master-addr-by-name mymaster | grep -E '(^redis-\d{1,})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})')"
-              echo "master found : $MASTER, updating redis.conf"
-              echo "slaveof $MASTER 6379" >> /etc/redis/redis.conf
-            fi
+        image: redis:latest
+        command:
+        - bash
+        - "-c"
+        - |
+          cp /mnt/config-map/master.conf /etc/redis.conf
         volumeMounts:
-        - name: redis-config
-          mountPath: /etc/redis/
-        - name: config
-          mountPath: /tmp/redis/
+        - name: conf
+          mountPath: /etc
+        - name: config-redis
+          mountPath: /mnt/config-map
       containers:
       - name: redis
         image: redis:6.2.3-alpine
         command: ["redis-server"]
-        args: ["/etc/redis/redis.conf"]
+        args: ["/etc/redis.conf"]
+        env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
         ports:
-        - containerPort: 6379
-          name: redis
+        - name: redis
+          containerPort: 6379
         volumeMounts:
+        - name: conf
+          mountPath: /etc/
         - name: data
           mountPath: /data
-        - name: redis-config
-          mountPath: /etc/redis/
       volumes:
-      - name: redis-config
-        emptyDir: {}
-      - name: config
-        configMap:
-          name: redis
+        - name: conf
+          emptyDir: {}
+        - name: config-redis
+          configMap:
+            name: redis
   volumeClaimTemplates:
   - metadata:
       name: data
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "redis"
+      storageClassName: redis
+      resources:
+        requests:
+          storage: 500Mi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-slave
+  labels:
+    app: redis
+    role: slave
+spec:
+  serviceName: redis
+  replicas: 2
+  selector:
+    matchLabels:
+      app: redis
+      role: slave
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: slave
+    spec:
+      initContainers:
+      - name: config
+        image: redis:latest
+        command:
+        - bash
+        - "-c"
+        - |
+          cp /mnt/config-map/slave.conf /etc/redis.conf
+        volumeMounts:
+        - name: conf
+          mountPath: /etc
+        - name: config-redis
+          mountPath: /mnt/config-map
+      containers:
+      - name: redis
+        image: redis:6.2.3-alpine
+        command: ["redis-server"]
+        args: ["/etc/redis.conf"]
+        env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        ports:
+        - name: redis
+          containerPort: 6379
+        volumeMounts:
+        - name: conf
+          mountPath: /etc/
+        - name: data
+          mountPath: /data
+      volumes:
+        - name: conf
+          emptyDir: {}
+        - name: config-redis
+          configMap:
+            name: redis
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: redis
       resources:
         requests:
           storage: 500Mi

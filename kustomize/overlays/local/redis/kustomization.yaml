@@ -8,8 +8,13 @@ namespace: base-app
 commonLabels:
   app: redis
   env: local
+images:
+  - name: redis
+    newTag: "6.2.6"
 #--------------------------------------------------
 # Base
 #--------------------------------------------------
 bases:
   - ../../../base/local/redis
+patchesStrategicMerge:
+  - patch-configmap.yaml

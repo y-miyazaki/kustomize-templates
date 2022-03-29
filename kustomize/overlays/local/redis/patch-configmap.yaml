@@ -21,4 +21,4 @@ data:
     loglevel notice
     logfile ""
   slave.conf: |
-    slaveof redis-0.redis 6379
+    slaveof base-redis-master-headless.base-app.svc.cluster.local 6379
