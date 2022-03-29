@@ -1,5 +1,6 @@
 #--------------------------------------------------
 # CronJob
+# https://kubernetes.io/ja/docs/concepts/workloads/controllers/cron-jobs/
 #--------------------------------------------------
 apiVersion: batch/v1beta1
 kind: CronJob
@@ -22,7 +23,7 @@ spec:
             command:
             - echo
             args:
-            - This is template.  
+            - This is template.
             resources:
               requests:
                 cpu: 100m

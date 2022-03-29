@@ -16,6 +16,8 @@ spec:
       labels:
         app: mysql
     spec:
+      # 削除されるまでの猶予の時間。デフォルトは30秒
+      terminationGracePeriodSeconds: 60
       containers:
         - image: mysql:latest
           name: mysql

@@ -16,4 +16,4 @@ deploy:
     - kustomize/overlays/dev/db/mysql
     # - kustomize/overlays/dev/db/postgres
     - kustomize/overlays/dev/aws/s3
-    - kustomize/overlays/dev/volume
+    # - kustomize/overlays/dev/volume

@@ -16,6 +16,8 @@ spec:
       labels:
         app: postgres
     spec:
+      # 削除されるまでの猶予の時間。デフォルトは30秒
+      terminationGracePeriodSeconds: 60
       containers:
         - image: postgres:latest
           name: postgres
