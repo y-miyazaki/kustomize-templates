@@ -9,6 +9,7 @@
 # k3d
 CLUSTER_NAME=local-cluster
 VOLUME=$(HOME)/k3d/data
+LOCAL_REGISTRY=registry.localhost
 
 # dashboard
 # https://github.com/kubernetes/dashboard
@@ -59,4 +60,4 @@ stop:
 .PHONY: delete
 delete:
 	k3d cluster delete $(CLUSTER_NAME)
-						
+	k3d registry delete $(LOCAL_REGISTRY)
