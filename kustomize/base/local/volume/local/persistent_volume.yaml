@@ -1,0 +1,22 @@
+---
+#--------------------------------------------------------------
+# PersistentVolume for hostpath
+# This is useful for single-node development and testing only! On-host storage is not supported in any way and WILL NOT WORK in a multi-node cluster.
+# https://kubernetes.io/ja/docs/concepts/storage/persistent-volumes/
+#--------------------------------------------------------------
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: local
+spec:
+  storageClassName: local
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  # ReadWriteOnce : 単一Nodeで読み書きが可能
+  # ReadOnlyMany : 複数Nodeで読み込みが可能
+  # ReadWriteMany : 複数Nodeから読み書きが可能
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data

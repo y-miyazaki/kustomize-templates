@@ -4,11 +4,10 @@ kind: Kustomization
 # Change value
 #--------------------------------------------------
 namePrefix: redis-
-namespace: redis
+namespace: base-app
 commonLabels:
   app: redis
   env: production
-  project: "test"
 images:
   - name: redis
     newName: redis

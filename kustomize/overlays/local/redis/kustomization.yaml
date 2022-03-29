@@ -6,17 +6,10 @@ kind: Kustomization
 namePrefix: base-
 namespace: base-app
 commonLabels:
-  app: postgres
-  env: production
-  project: "test"
-images:
-  - name: postgres
-    # newName: postgres
-    newTag: "14.2-alpine"
+  app: redis
+  env: local
 #--------------------------------------------------
 # Base
 #--------------------------------------------------
 bases:
-  - ../../../../base/db/postgres
-patchesStrategicMerge:
-  - patch-configmap.yaml
+  - ../../../base/local/redis

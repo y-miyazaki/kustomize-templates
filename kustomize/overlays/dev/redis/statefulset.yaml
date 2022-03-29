@@ -35,7 +35,7 @@ spec:
       # ReadWriteOnce : 1つのNodeがPVをmountすることが出来る。読み書き可能。
       # ReadOnlyMany : 複数のNodeがPVをmountすることが出来る。読み取り専用。
       # ReadWriteMany : 複数のNodeがPVをmountすることが出来る。読み書き可能
-      accessModes: [ "ReadWriteOnce" ]
+      accessModes: "ReadWriteOnce"
       resources:
         requests:
           storage: 1Gi

@@ -8,7 +8,11 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: local-storage-class
+  name: local
 # https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner
 provisioner: kubernetes.io/no-provisioner
+# 実際に紐付けを待つ場合は、WaitForFirstConsumer
+# 即時にPVを紐付ける場合、Immediate
 volumeBindingMode: WaitForFirstConsumer
+# allowVolumeExpansion: true
+reclaimPolicy: Delete

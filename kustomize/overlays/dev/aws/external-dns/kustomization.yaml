@@ -4,9 +4,8 @@ kind: Kustomization
 # Change value
 #--------------------------------------------------
 commonLabels:
-  app: cronjob
-  env: production
-  project: "test"
+  app: external_dns
+  env: dev
 images:
   - name: alpine
     newName: alpine

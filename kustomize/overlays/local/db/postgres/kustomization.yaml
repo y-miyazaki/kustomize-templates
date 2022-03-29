@@ -4,10 +4,18 @@ kind: Kustomization
 # Change value
 #--------------------------------------------------
 namePrefix: base-
+namespace: base-app
 commonLabels:
-  env: dev
-  #--------------------------------------------------
+  app: postgres
+  env: local
+images:
+  - name: postgres
+    # newName: postgres
+    newTag: "14.2-alpine"
+#--------------------------------------------------
 # Base
 #--------------------------------------------------
-resources:
-  - namespace.yaml
+bases:
+  - ../../../../base/local/db/postgres
+patchesStrategicMerge:
+  - patch-configmap.yaml

@@ -8,7 +8,6 @@ namespace: base-app
 commonLabels:
   app: nginx
   env: production
-  project: "test"
 images:
   - name: image
     newName: nginx

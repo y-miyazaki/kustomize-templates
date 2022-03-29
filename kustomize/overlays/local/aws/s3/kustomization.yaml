@@ -3,10 +3,13 @@ kind: Kustomization
 #--------------------------------------------------
 # Change value
 #--------------------------------------------------
+namePrefix: base-
 namespace: base-app
 commonLabels:
-  app: nginx1
-  env: production
-  project: test
-resources:
-  - ingress.yaml
+  app: s3
+  env: local
+#--------------------------------------------------
+# Base
+#--------------------------------------------------
+bases:
+  - ../../../../base/local/aws/s3

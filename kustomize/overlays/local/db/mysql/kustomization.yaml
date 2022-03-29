@@ -7,8 +7,7 @@ namePrefix: base-
 namespace: base-app
 commonLabels:
   app: mysql
-  env: production
-  project: "test"
+  env: local
 images:
   - name: mysql
     # newName: mysql
@@ -17,6 +16,6 @@ images:
 # Base
 #--------------------------------------------------
 bases:
-  - ../../../../base/db/mysql
+  - ../../../../base/local/db/mysql
 patchesStrategicMerge:
   - patch-configmap.yaml

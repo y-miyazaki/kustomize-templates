@@ -3,10 +3,11 @@ kind: Kustomization
 #--------------------------------------------------
 # Change value
 #--------------------------------------------------
-namespace: argocd
+namePrefix: base-
 commonLabels:
-  app: argocd
-  env: production
-  project: test
+  env: local
+  #--------------------------------------------------
+# Base
+#--------------------------------------------------
 resources:
-  - ingress.yaml
+  - namespace.yaml

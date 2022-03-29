@@ -4,11 +4,10 @@ kind: Kustomization
 # Change value
 #--------------------------------------------------
 namePrefix: hello-
-namespace: cronjob
+namespace: base-app
 commonLabels:
   app: cronjob
-  env: production
-  project: "test"
+  env: dev
 images:
   - name: alpine
     newName: alpine

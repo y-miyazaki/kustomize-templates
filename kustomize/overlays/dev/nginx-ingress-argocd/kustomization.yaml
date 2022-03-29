@@ -6,8 +6,7 @@ namespace: argocd
 commonLabels:
   app: nginx
   env: production
-  project: test
-bases:
+  bases:
   - ../../../base/nginx-ingress
 resources:
   # - namespace.yaml
