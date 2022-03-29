@@ -19,7 +19,10 @@ Kustomize templates are compiled here.
     - [Delete cluster](#delete-cluster)
 
 ## MinIO for local
-MinIO offers high-performance, S3 compatible object storage. It is created as a local environment.
+MinIO offers high-performance, S3 compatible object storage. It is created as a local environment.  
+
+https://min.io/
+
 - base  
 [kustomize/base/local/aws/s3](kustomize/base/local/aws/s3)
 - overlays  
@@ -50,7 +53,10 @@ Postgres is created as a local environment.
 localhost:30432 admin/rootpass
 
 ## Redis for local
-Redis is configured as a Master/Slave Cluster. It is created as a local environment.
+Redis is configured as a Master/Slave Cluster. It is created as a local environment.  
+
+https://redis.io/
+
 - base  
 [kustomize/base/local/redis](kustomize/base/local/redis)
 - overlays  
@@ -69,7 +75,10 @@ Redis is configured as a Master/Slave Cluster. It is created as a local environm
 
 ## ArgoCD for local
 Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes. The following example is set up for local use.
-It is designed to be accessed via Ingress from the traefik LoadBalancer included with K3d.
+It is designed to be accessed via Ingress from the traefik LoadBalancer included with K3d.  
+
+https://argo-cd.readthedocs.io/
+
 - base  
 [kustomize/base/argocd](kustomize/base/argocd)
 - overlays  
