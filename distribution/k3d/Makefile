@@ -61,3 +61,7 @@ stop:
 delete:
 	k3d cluster delete $(CLUSTER_NAME)
 	k3d registry delete $(LOCAL_REGISTRY)
+
+.PHONY: delete-volume
+delete-volume: delete
+	rm -rf $(VOLUME)

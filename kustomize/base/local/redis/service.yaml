@@ -12,6 +12,7 @@ spec:
   selector:
     app: redis
     role: master
+  externalTrafficPolicy: Cluster
   ports:
     - protocol: TCP
       port: 6379
@@ -27,6 +28,7 @@ spec:
   selector:
     app: redis
     role: slave
+  externalTrafficPolicy: Cluster
   ports:
     - protocol: TCP
       port: 6379

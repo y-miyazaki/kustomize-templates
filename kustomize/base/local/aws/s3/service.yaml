@@ -11,6 +11,7 @@ spec:
   type: NodePort
   selector:
     app: s3
+  externalTrafficPolicy: Cluster
   ports:
     - name: s3-api
       protocol: TCP

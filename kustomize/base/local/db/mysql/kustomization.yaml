@@ -3,6 +3,6 @@ kind: Kustomization
 resources:
   - configmap.yaml
   - deployment.yaml
-  - horizontalpodautoscaler.yaml
+  - horizontal_pod_autoscaler.yaml
   - secret.yaml
   - service.yaml
