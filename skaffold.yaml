@@ -22,10 +22,10 @@ profiles:
       defaultNamespace: base-infra
       paths: 
         - kustomize/overlays/local/namespace-base-infra
-        - kustomize/overlays/local/db/mysql         # mysql:    localhost:30306 root/rootpass
+        # - kustomize/overlays/local/db/mysql         # mysql:    localhost:30306 root/rootpass
         # - kustomize/overlays/local/db/postgres      # postgres: localhost:30432 admin/rootpass
         # - kustomize/overlays/local/aws/s3           # minio:    http://localhost:30101
-        # - kustomize/overlays/local/redis            # redis:    http://localhost:30379
+        - kustomize/overlays/local/redis            # redis:    http://localhost:30379
         # - kustomize/overlays/local/volume
 - name: app
   deploy:

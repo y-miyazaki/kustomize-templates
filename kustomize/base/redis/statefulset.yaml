@@ -1,0 +1,134 @@
+---
+#--------------------------------------------------------------
+# StatefulSet
+# https://kubernetes.io/ja/docs/concepts/workloads/controllers/statefulset/
+#--------------------------------------------------------------
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-master
+  labels:
+    app: redis
+    role: master
+spec:
+  serviceName: redis
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+      role: master
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: master
+    spec:
+      initContainers:
+      - name: config
+        image: redis:latest
+        command:
+        - bash
+        - "-c"
+        - |
+          cp /mnt/config-map/master.conf /etc/redis.conf
+        volumeMounts:
+        - name: conf
+          mountPath: /etc
+        - name: config-redis
+          mountPath: /mnt/config-map
+      containers:
+      - name: redis
+        image: redis:6.2.3-alpine
+        command: ["redis-server"]
+        args: ["/etc/redis.conf"]
+        env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        ports:
+        - name: redis
+          containerPort: 6379
+        volumeMounts:
+        - name: conf
+          mountPath: /etc/
+        - name: data
+          mountPath: /data
+      volumes:
+        - name: conf
+          emptyDir: {}
+        - name: config-redis
+          configMap:
+            name: redis
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: redis
+      resources:
+        requests:
+          storage: 500Mi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-slave
+  labels:
+    app: redis
+    role: slave
+spec:
+  serviceName: redis
+  replicas: 2
+  selector:
+    matchLabels:
+      app: redis
+      role: slave
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: slave
+    spec:
+      initContainers:
+      - name: config
+        image: redis:latest
+        command:
+        - bash
+        - "-c"
+        - |
+          cp /mnt/config-map/slave.conf /etc/redis.conf
+        volumeMounts:
+        - name: conf
+          mountPath: /etc
+        - name: config-redis
+          mountPath: /mnt/config-map
+      containers:
+      - name: redis
+        image: redis:6.2.3-alpine
+        command: ["redis-server"]
+        args: ["/etc/redis.conf"]
+        env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        ports:
+        - name: redis
+          containerPort: 6379
+        volumeMounts:
+        - name: conf
+          mountPath: /etc/
+        - name: data
+          mountPath: /data
+      volumes:
+        - name: conf
+          emptyDir: {}
+        - name: config-redis
+          configMap:
+            name: redis
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: redis
+      resources:
+        requests:
+          storage: 500Mi
