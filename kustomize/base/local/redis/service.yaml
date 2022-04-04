@@ -38,13 +38,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-master-headless
+  name: redis-master
 spec:
   type: ClusterIP
   selector:
     app: redis
     role: master
-  clusterIP: None
   ports:
     - protocol: TCP
       port: 6379
@@ -53,13 +52,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-slave-headless
+  name: redis-slave
 spec:
   type: ClusterIP
   selector:
     app: redis
     role: slave
-  clusterIP: None
   ports:
     - protocol: TCP
       port: 6379
