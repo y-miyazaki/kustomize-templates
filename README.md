@@ -89,7 +89,7 @@ https://argo-cd.readthedocs.io/
 
   The initial password can be obtained with the following command
   ```
-  $ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath=\"{.data.password}\" | base64 -d;
+  $ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d;
   ```
   Since argocd-server.local is the hostname for the distribution in Ingress, it must be added to /etc/hosts.
   ```

@@ -4,7 +4,6 @@ kind: Kustomization
 # Change value
 #--------------------------------------------------
 namePrefix: base-nginx1-
-namespace: base-app
 commonLabels:
   app: nginx
   env: production

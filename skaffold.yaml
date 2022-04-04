@@ -1,25 +1,37 @@
-apiVersion: skaffold/v2beta1
+apiVersion: skaffold/v2beta10
 kind: Config
 metadata:
   name: kustomize-templates
-deploy:
-  kustomize:
-    paths:
-    # for ArgoCD
-    # - kustomize/overlays/dev/argocd
-    # examples
-    # - kustomize/overlays/dev/nginx1
-    # - kustomize/overlays/dev/nginx2
-    #--------------------------------------------------
-    # local
-    #--------------------------------------------------
-    - kustomize/overlays/local/namespace
-    # for ArgoCD
-    # - kustomize/overlays/local/argocd
-    # - kustomize/overlays/local/traefik-nginx1
-    # - kustomize/overlays/local/traefik-argocd   # argocd:   http://argocd-server.local:8081/ admin/****
-    # - kustomize/overlays/local/db/mysql         # mysql:    localhost:30306 root/rootpass
-    # - kustomize/overlays/local/db/postgres      # postgres: localhost:30432 admin/rootpass
-    # - kustomize/overlays/local/aws/s3           # minio:    http://localhost:30101
-    - kustomize/overlays/local/redis            # redis:    http://localhost:30379
-    # - kustomize/overlays/local/volume
+# build:
+#   local:
+#     concurrency: 0
+#     useBuildkit: true
+
+profiles:
+- name: argocd
+  deploy:
+    kustomize:
+      defaultNamespace: argocd
+      paths: 
+        - kustomize/overlays/local/namespace-argocd
+        - kustomize/overlays/local/argocd
+        - kustomize/overlays/local/traefik-argocd   # argocd:   http://argocd-server.local:8081/ admin/****
+- name: infra
+  deploy:
+    kustomize:
+      defaultNamespace: base-infra
+      paths: 
+        - kustomize/overlays/local/namespace-base-infra
+        - kustomize/overlays/local/db/mysql         # mysql:    localhost:30306 root/rootpass
+        # - kustomize/overlays/local/db/postgres      # postgres: localhost:30432 admin/rootpass
+        # - kustomize/overlays/local/aws/s3           # minio:    http://localhost:30101
+        # - kustomize/overlays/local/redis            # redis:    http://localhost:30379
+        # - kustomize/overlays/local/volume
+- name: app
+  deploy:
+    kustomize:
+      defaultNamespace: base-app
+      paths: 
+        - kustomize/overlays/local/namespace-base-app
+        # - kustomize/overlays/local/traefik-nginx1
+        # - kustomize/overlays/dev/nginx1

@@ -3,7 +3,6 @@ kind: Kustomization
 #--------------------------------------------------
 # Change value
 #--------------------------------------------------
-namespace: argocd
 commonLabels:
   app: argocd
   env: production
