@@ -10,10 +10,15 @@
 CLUSTER_NAME=local-cluster
 VOLUME=$(HOME)/k3d/data
 LOCAL_REGISTRY=registry.localhost
+LOCAL_REG_PORT=6000
 
 # dashboard
 # https://github.com/kubernetes/dashboard
 VERSION_KUBE_DASHBOARD=v2.5.1
+
+.PHONY: create-registry
+create-registry:
+	k3d registry create $(LOCAL_REGISTRY) -p $(LOCAL_REG_PORT)
 
 # for k3d cluster
 .PHONY: create
@@ -57,10 +62,13 @@ start:
 stop:
 	k3d cluster stop $(CLUSTER_NAME)
 
+.PHONY: delete-registry
+delete-registry: 
+	k3d registry delete ${LOCAL_REGISTRY}
+
 .PHONY: delete
 delete:
 	k3d cluster delete $(CLUSTER_NAME)
-	k3d registry delete $(LOCAL_REGISTRY)
 
 .PHONY: delete-volume
 delete-volume: delete

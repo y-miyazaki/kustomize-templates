@@ -22,6 +22,7 @@ volumes: # repeatable flags are represented as YAML lists
     nodeFilters:
       - server:0
       - agent:*
+
 ports:
   - port: 30000-31000:30000-31000 # same as `--port '30000-31000:30000-31000@server:0'`
     nodeFilters:
@@ -32,18 +33,18 @@ ports:
 # env:
 #   - envVar: bar=baz # same as `--env 'bar=baz@server:0'`
 #     nodeFilters:
-registries: # define how registries should be created or used
-  create: # creates a default registry to be used with the cluster; same as `--registry-create registry.localhost`
-    name: registry.localhost
-    host: "0.0.0.0"
-    hostPort: "6000"
+# registries: # define how registries should be created or used
+  # create: # creates a default registry to be used with the cluster; same as `--registry-create k3d-registry.localhost`
+  #   name: registry.localhost
+  #   host: "0.0.0.0"
+  #   hostPort: "6000"
   # use:
-  #   - k3d-myotherregistry:5000 # some other k3d-managed registry; same as `--registry-use 'k3d-myotherregistry:5000'`
+  #   - k3d-registry.localhost:6000 # some other k3d-managed registry; same as `--registry-use 'k3d-local-registry:5000'`
   # config: | # define contents of the `registries.yaml` file (or reference a file); same as `--registry-config /path/to/config.yaml`
   #   mirrors:
-  #     "registry.local:5000":
+  #     "registry.localhost:6000":
   #       endpoint:
-  #         - http://registry.local:5000
+  #         - http://localhost:6000
 options:
   k3d: # k3d runtime settings
     wait: true # wait for cluster to be usable before returining; same as `--wait` (default: true)

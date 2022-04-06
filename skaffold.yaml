@@ -2,10 +2,18 @@ apiVersion: skaffold/v2beta26
 kind: Config
 metadata:
   name: kustomize-templates
-# build:
-#   local:
-#     concurrency: 0
-#     useBuildkit: true
+build:
+  tagPolicy:
+    sha256: {}
+  local:
+    push: false
+    concurrency: 0
+    useBuildkit: true
+  artifacts:
+    - image: main
+      context: .
+      docker:
+        dockerfile: ./docker/Dockerfile
 
 profiles:
 - name: namespace
@@ -20,7 +28,7 @@ profiles:
     kustomize:
       defaultNamespace: infra-local
       paths: 
-        # - kustomize/overlays/local/db/mysql         # mysql:    localhost:30306 root/rootpass
+        - kustomize/overlays/local/db/mysql         # mysql:    localhost:30306 root/rootpass
         # - kustomize/overlays/local/db/postgres      # postgres: localhost:30432 admin/rootpass
         # - kustomize/overlays/local/aws/s3           # minio:    http://localhost:30101
         # - kustomize/overlays/local/redis            # redis:    http://localhost:30379
@@ -30,6 +38,8 @@ profiles:
     kustomize:
       defaultNamespace: app
       paths: 
+          - kustomize/overlays/local/test-app
+          # - kustomize/overlays/local/ingress-nginx1
           # - kustomize/overlays/local/ingress-nginx1
           # - kustomize/overlays/dev/nginx1
 - name: infra

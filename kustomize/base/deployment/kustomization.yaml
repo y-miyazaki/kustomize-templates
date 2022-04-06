@@ -3,4 +3,3 @@ kind: Kustomization
 resources:
   - deployment.yaml
   - horizontal_pod_autoscaler.yaml
-  - service.yaml
