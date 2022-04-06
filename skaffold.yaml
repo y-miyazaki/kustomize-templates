@@ -1,4 +1,4 @@
-apiVersion: skaffold/v2beta10
+apiVersion: skaffold/v2beta26
 kind: Config
 metadata:
   name: kustomize-templates
@@ -8,30 +8,108 @@ metadata:
 #     useBuildkit: true
 
 profiles:
-- name: argocd
+- name: namespace
   deploy:
     kustomize:
-      defaultNamespace: argocd
       paths: 
-        - kustomize/overlays/local/namespace-argocd
-        - kustomize/overlays/local/argocd
-        - kustomize/overlays/local/traefik-argocd   # argocd:   http://argocd-server.local:8081/ admin/****
-- name: infra
+        - kustomize/overlays/local/namespace
+        - kustomize/overlays/common/namespace-argocd
+        - kustomize/overlays/common/namespace-istio-ingress
+- name: infra-local
   deploy:
     kustomize:
-      defaultNamespace: base-infra
+      defaultNamespace: infra-local
       paths: 
-        - kustomize/overlays/local/namespace-base-infra
         # - kustomize/overlays/local/db/mysql         # mysql:    localhost:30306 root/rootpass
         # - kustomize/overlays/local/db/postgres      # postgres: localhost:30432 admin/rootpass
         # - kustomize/overlays/local/aws/s3           # minio:    http://localhost:30101
-        - kustomize/overlays/local/redis            # redis:    http://localhost:30379
+        # - kustomize/overlays/local/redis            # redis:    http://localhost:30379
         # - kustomize/overlays/local/volume
 - name: app
   deploy:
     kustomize:
-      defaultNamespace: base-app
+      defaultNamespace: app
       paths: 
-        - kustomize/overlays/local/namespace-base-app
-        # - kustomize/overlays/local/traefik-nginx1
-        # - kustomize/overlays/dev/nginx1
+          # - kustomize/overlays/local/ingress-nginx1
+          # - kustomize/overlays/dev/nginx1
+- name: infra
+  deploy:
+    helm:
+      releases:
+        # redis
+        - name: redis
+          namespace: infra
+          createNamespace: true
+          repo: https://charts.bitnami.com/bitnami
+          remoteChart: redis
+#--------------------------------------------------
+# ArgoCD
+# https://argo-cd.readthedocs.io/en/stable/
+#--------------------------------------------------
+- name: argocd-local
+  deploy:
+    kustomize:
+      defaultNamespace: argocd
+      paths: 
+        - kustomize/overlays/local/argocd
+        # argocd:   http://argocd-server.local:8081/ admin/****
+        - kustomize/overlays/local/ingress-argocd
+#--------------------------------------------------
+# kube-prometheus-stack
+# https://github.com/prometheus-operator/kube-prometheus
+# https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+#--------------------------------------------------
+- name: monitoring-local
+  deploy:
+    helm:
+      releases:
+        - name: kube-prometheus-stack
+          namespace: monitoring
+          createNamespace: true
+          repo: https://prometheus-community.github.io/helm-charts
+          remoteChart: kube-prometheus-stack
+    kustomize:
+      defaultNamespace: monitoring
+      paths: 
+          # prometheus:   http://prometheus-server.local:8081/
+          - kustomize/overlays/local/ingress-prometheus
+#--------------------------------------------------
+# metrics-server
+# https://docs.aws.amazon.com/eks/latest/userguide/metrics-server.html
+#--------------------------------------------------
+- name: metrics-server
+  deploy:
+    kubectl:
+      manifests:
+        - "https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml"
+#--------------------------------------------------
+# istio
+# https://istio.io/latest/
+# https://istio.io/latest/docs/setup/install/helm/
+#--------------------------------------------------
+- name: istio
+  deploy:
+    helm:
+      releases:
+        - name: base
+          namespace: istio-system
+          createNamespace: true
+          repo: https://istio-release.storage.googleapis.com/charts
+          remoteChart: base
+        - name: istiod
+          namespace: istio-system
+          repo: https://istio-release.storage.googleapis.com/charts
+          remoteChart: istiod
+          wait: true
+#--------------------------------------------------
+# istio-ingress
+# https://istio.io/latest/docs/setup/install/helm/
+#--------------------------------------------------
+- name: istio-ingress
+  deploy:
+    helm:
+      releases:
+        - name: gateway
+          namespace: istio-ingress
+          repo: https://istio-release.storage.googleapis.com/charts
+          remoteChart: gateway

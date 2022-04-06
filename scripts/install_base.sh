@@ -7,7 +7,7 @@ set -e
 # Variable
 #--------------------------------------------------------------
 KUBECTL_VERSION=v1.21.2
-SKAFFOLD_VERSION=v1.18.0
+SKAFFOLD_VERSION=v1.37.1
 CONTAINER_STRUCTURE_TEST_VERSION=v1.11.0
 HELM_VERSION=v3.6.2
 STERN_VERSION=1.11.0

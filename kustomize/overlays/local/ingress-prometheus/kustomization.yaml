@@ -4,9 +4,7 @@ kind: Kustomization
 # Change value
 #--------------------------------------------------
 commonLabels:
-  env: local
-  #--------------------------------------------------
-# Base
-#--------------------------------------------------
+  app: prometheus-stack
+  env: production
 resources:
-  - namespace.yaml
+  - ingress.yaml

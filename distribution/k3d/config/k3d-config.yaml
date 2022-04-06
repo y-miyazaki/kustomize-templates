@@ -13,12 +13,12 @@ kubeAPI: # same as `--api-port myhost.my.domain:6445` (where the name would reso
   hostPort: "6445" # where the Kubernetes API listening port will be mapped to on your host system
 
 # https://hub.docker.com/r/rancher/k3s/tags
-image: rancher/k3s:v1.20.15-k3s1 # same as `--image rancher/k3s:v1.20.4-k3s1`
+image: rancher/k3s:v1.22.5-k3s1 # same as `--image rancher/k3s:v1.22.5-k3s1`
 # network: my-custom-net # same as `--network my-custom-net`
 # subnet: "172.28.0.0/16" # same as `--subnet 172.28.0.0/16`
 # token: superSecretToken # same as `--token superSecretToken`
 volumes: # repeatable flags are represented as YAML lists
-  - volume: ${HOME}/k3d/data:/data # same as `--volume '/my/host/path:/path/in/node@server:0;agent:*'`
+  - volume: ${HOME}/k3d/data:/data # same as `--volume '/home/yourhome/k3d/data:/data@server:0;agent:*'`
     nodeFilters:
       - server:0
       - agent:*

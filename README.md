@@ -9,6 +9,7 @@ Kustomize templates are compiled here.
   - [Postgres for local](#postgres-for-local)
   - [Redis for local](#redis-for-local)
   - [ArgoCD for local](#argocd-for-local)
+  - [kube-prometheus for local](#kube-prometheus-for-local)
 - Kustomize distribution
   - [k3d](#k3d)
     - [Install k3d command](#install-k3d-command)
@@ -82,8 +83,8 @@ https://argo-cd.readthedocs.io/
 - base  
 [kustomize/base/argocd](kustomize/base/argocd)
 - overlays  
-[kustomize/overlays/argocd](kustomize/overlays/argocd)  
-[kustomize/overlays/traefik-argocd](kustomize/overlays/traefik-argocd)
+[kustomize/overlays/local/argocd](kustomize/overlays/local/argocd)  
+[kustomize/overlays/local/ingress-argocd](kustomize/overlays/local/ingress-argocd)
 - access  
   http://argocd-server.local:8081/ admin/*****
 
@@ -94,6 +95,23 @@ https://argo-cd.readthedocs.io/
   Since argocd-server.local is the hostname for the distribution in Ingress, it must be added to /etc/hosts.
   ```
   $ echo 127.0.0.1 argocd-server.local >> /etc/hosts
+  ```
+
+## kube-prometheus for local
+kube-prometheus collects Kubernetes manifests, Grafana dashboards, and Prometheus rules combined with documentation and scripts to provide easy to operate end-to-end Kubernetes cluster monitoring with Prometheus using the Prometheus Operator.  
+The following example is set up for local use.
+It is designed to be accessed via Ingress from the traefik LoadBalancer included with K3d.  
+
+https://github.com/prometheus-operator/kube-prometheus
+
+- overlays  
+[kustomize/overlays/local/ingress-prometheus](kustomize/overlays/local/ingress-prometheus)
+- access  
+  http://prometheus-server.local:8081/ admin/*****
+
+  Since prometheus-server.local is the hostname for the distribution in Ingress, it must be added to /etc/hosts.
+  ```
+  $ echo 127.0.0.1 prometheus-server.local >> /etc/hosts
   ```
 
 # Kubernetes distribution
