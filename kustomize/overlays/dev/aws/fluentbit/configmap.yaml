@@ -1,0 +1,17 @@
+---
+#--------------------------------------------------------------
+# ConfigMap
+# https://kubernetes.io/ja/docs/concepts/configuration/configmap/
+# https://docs.aws.amazon.com/ja_jp/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-logs-FluentBit.html#Container-Insights-FluentBit-setup
+#--------------------------------------------------------------
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-cluster-info
+data:
+  cluster.name: "k3d-local-cluster"
+  http.server: "On"
+  http.port: "2020"
+  read.head: "Off"
+  read.tail: "Off"
+  logs.region: "ap-northeast-1 -n amazon-cloudwatch"
