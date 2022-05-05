@@ -20,9 +20,8 @@ profiles:
     kustomize:
       paths: 
         - kustomize/overlays/local/namespace
-        - kustomize/overlays/common/namespace-argocd
         - kustomize/overlays/common/namespace-istio-ingress
-- name: infra-local
+- name: local-infra
   deploy:
     kustomize:
       defaultNamespace: infra-local
@@ -30,9 +29,12 @@ profiles:
         - kustomize/overlays/local/db/mysql         # mysql:    localhost:30306 root/rootpass
         - kustomize/overlays/local/db/postgres      # postgres: localhost:30432 admin/rootpass
         - kustomize/overlays/local/aws/s3           # minio:    http://localhost:30101
-        - kustomize/overlays/local/redis            # redis:    http://localhost:30379
+        # - kustomize/overlays/local/redis            # redis:    http://localhost:30379
         # - kustomize/overlays/local/volume
-- name: app
+#--------------------------------------------------
+# local: App
+#--------------------------------------------------
+- name: local-app
   deploy:
     kustomize:
       defaultNamespace: app
@@ -41,6 +43,15 @@ profiles:
           # - kustomize/overlays/local/ingress-nginx1
           # - kustomize/overlays/local/ingress-nginx1
           # - kustomize/overlays/dev/nginx1
+#--------------------------------------------------
+# dev: App
+#--------------------------------------------------
+- name: dev-app
+  deploy:
+    kustomize:
+      defaultNamespace: app
+      paths: 
+          - kustomize/overlays/dev/test-app
 - name: infra
   deploy:
     helm:
@@ -52,23 +63,24 @@ profiles:
           repo: https://charts.bitnami.com/bitnami
           remoteChart: redis
 #--------------------------------------------------
-# ArgoCD
+# local: ArgoCD
 # https://argo-cd.readthedocs.io/en/stable/
 #--------------------------------------------------
-- name: argocd-local
+- name: local-argocd
   deploy:
     kustomize:
       defaultNamespace: argocd
       paths: 
+        - kustomize/overlays/common/namespace-argocd
         - kustomize/overlays/local/argocd
         # argocd:   http://argocd-server.local:8081/ admin/****
         - kustomize/overlays/local/ingress-argocd
 #--------------------------------------------------
-# kube-prometheus-stack
+# local: kube-prometheus-stack
 # https://github.com/prometheus-operator/kube-prometheus
 # https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
 #--------------------------------------------------
-- name: monitoring-local
+- name: local-monitoring
   deploy:
     helm:
       releases:
@@ -82,21 +94,6 @@ profiles:
       paths: 
           # prometheus:   http://prometheus-server.local:8081/
           - kustomize/overlays/local/ingress-prometheus
-#--------------------------------------------------
-# metrics-server for EKS
-# https://docs.aws.amazon.com/eks/latest/userguide/metrics-server.html
-# fixed port and add option.
-# - args
-#  - --secure-port=443
-#  - --kubelet-preferred-address-types=InternalIP
-#  - --kubelet-insecure-tls
-#--------------------------------------------------
-- name: metrics-server-eks
-  deploy:
-    kubectl:
-      manifests:
-        - "kubectl/aws/metrics-server/components.yaml"
-
 #--------------------------------------------------
 # metrics-server
 # https://docs.aws.amazon.com/eks/latest/userguide/metrics-server.html
@@ -121,59 +118,59 @@ profiles:
 #    $ kubectl port-forward svc/kube-prometheus-stack-prometheus -n monitoring 9090:9090
 # - cluster autoscaler
 #--------------------------------------------------
-- name: eks
-  deploy:
-    kubectl:
-      manifests:
-        # metrics-server
-        - "kubectl/aws/metrics-server/components.yaml"
-    helm:
-      hooks:
-        before:
-        - host:
-            command: ["helm","repo","add","aws","https://aws.github.io/eks-charts"]
-            os: [linux]
-      releases:
-        # Cluster Autoscaler
-        # https://artifacthub.io/packages/helm/cluster-autoscaler/cluster-autoscaler
-        - name: cluster-autoscaler
-          namespace: kube-system
-          createNamespace: false
-          repo: https://kubernetes.github.io/autoscaler
-          remoteChart: cluster-autoscaler
-          # https://github.com/kubernetes/autoscaler/blob/master/charts/cluster-autoscaler/values.yaml
-          setValues:
-            autoDiscovery.clusterName: base-test
-            awsRegion: ap-northeast-1
-            image.tag: v1.22.0
-            rbac.serviceAccount.annotations.eks\.amazonaws\.com/role-arn: arn:aws:iam::xxxxxxxxxxxx:role/base-test-ClusterAutoscalerRole
-            rbac.serviceAccount.name: cluster-autoscaler
+# - name: eks
+#   deploy:
+#     kubectl:
+#       manifests:
+#         # metrics-server
+#         - "kubectl/aws/metrics-server/components.yaml"
+#     helm:
+#       hooks:
+#         before:
+#         - host:
+#             command: ["helm","repo","add","aws","https://aws.github.io/eks-charts"]
+#             os: [linux]
+#       releases:
+        # # Cluster Autoscaler
+        # # https://artifacthub.io/packages/helm/cluster-autoscaler/cluster-autoscaler
+        # - name: cluster-autoscaler
+        #   namespace: kube-system
+        #   createNamespace: false
+        #   repo: https://kubernetes.github.io/autoscaler
+        #   remoteChart: cluster-autoscaler
+        #   # https://github.com/kubernetes/autoscaler/blob/master/charts/cluster-autoscaler/values.yaml
+        #   setValues:
+        #     autoDiscovery.clusterName: base-test
+        #     awsRegion: ap-northeast-1
+        #     image.tag: v1.22.0
+        #     rbac.serviceAccount.annotations.eks\.amazonaws\.com/role-arn: arn:aws:iam::xxxxxxxxxxxx:role/base-test-ClusterAutoscalerRole
+        #     rbac.serviceAccount.name: cluster-autoscaler
         # Prometheus Stack
-        - name: kube-prometheus-stack
-          namespace: monitoring
-          createNamespace: true
-          repo: https://prometheus-community.github.io/helm-charts
-          remoteChart: kube-prometheus-stack
+        # - name: kube-prometheus-stack
+        #   namespace: monitoring
+        #   createNamespace: true
+        #   repo: https://prometheus-community.github.io/helm-charts
+        #   remoteChart: kube-prometheus-stack
         # FluentBit
         # https://artifacthub.io/packages/helm/aws/aws-for-fluent-bit
-        - name: fluent-bit
-          namespace: kube-system
-          createNamespace: false
-          # Note: For some reason, helm install fails with an error when I put in the repo as is.
-          # repo: https://aws.github.io/eks-charts
-          remoteChart: aws/aws-for-fluent-bit
-          version: 0.1.16
-          setValues:
-            cloudWatch.enabled: true
-            cloudWatch.region: ap-northeast-1
-            cloudWatch.logGroupName: /aws/eks/fluent-bit-cloudwatch/logs
-            cloudWatch.logRetentionDays: 14
-            serviceAccount.name: fluent-bit
-            serviceAccount.annotations.eks\.amazonaws\.com/role-arn: arn:aws:iam::xxxxxxxxxx:role/base-test-FluentBitRole
-            global.namespaceOverride: kube-system
-            image.tag: 2.21.5
-            kinesis.enabled: false
-            elasticsearch.enabled: false
+        # - name: fluent-bit
+        #   namespace: kube-system
+        #   createNamespace: false
+        #   # Note: For some reason, helm install fails with an error when I put in the repo as is.
+        #   # repo: https://aws.github.io/eks-charts
+        #   remoteChart: aws/aws-for-fluent-bit
+        #   version: 0.1.16
+        #   setValues:
+        #     cloudWatch.enabled: true
+        #     cloudWatch.region: ap-northeast-1
+        #     cloudWatch.logGroupName: /aws/eks/fluent-bit-cloudwatch/logs
+        #     cloudWatch.logRetentionDays: 14
+        #     serviceAccount.name: fluent-bit
+        #     serviceAccount.annotations.eks\.amazonaws\.com/role-arn: arn:aws:iam::xxxxxxxxxx:role/base-test-FluentBitRole
+        #     global.namespaceOverride: kube-system
+        #     image.tag: 2.21.5
+        #     kinesis.enabled: false
+        #     elasticsearch.enabled: false
     # kustomize:
     #   defaultNamespace: argocd
     #   paths: 

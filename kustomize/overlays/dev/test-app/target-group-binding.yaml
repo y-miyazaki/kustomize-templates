@@ -1,0 +1,19 @@
+apiVersion: elbv2.k8s.aws/v1alpha1
+kind: TargetGroupBinding
+metadata:
+  name: tgb
+spec:
+  serviceRef:
+    name: test-app-svc
+    port: 8080
+  targetGroupARN: arn:aws:elasticloadbalancing:ap-northeast-1:xxxxxxxxxxx:targetgroup/xxxxxxxxxxxxxxxxx
+  targetType: ip
+  networking:
+    ingress:
+    - from:
+      - securityGroup:
+          groupID: sg-xxxxxxxxxxxxxxxxx
+      - securityGroup:
+          groupID: sg-xxxxxxxxxxxxxxxxx
+      ports:
+      - protocol: TCP

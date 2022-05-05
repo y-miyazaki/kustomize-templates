@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment
+spec:
+  template:
+    spec:
+      # 削除されるまでの猶予の時間。デフォルトは30秒
+      terminationGracePeriodSeconds: 60
+      # SecurityContext v1 Core
+      # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#securitycontext-v1-core
+      # securityContext:
+        # runAsUser: 1000
+        # runAsGroup: 3000
+        # fsGroup: 2000
+        # runAsNonRoot: true
+      containers:
+        - name: pod
+          envFrom:
+            - secretRef:
+                name: secrets
