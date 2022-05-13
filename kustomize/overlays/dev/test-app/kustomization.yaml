@@ -9,7 +9,7 @@ commonLabels:
   env: local
 images:
   - name: image
-    newName: xxxxxxxxxxxxxx.dkr.ecr.ap-northeast-1.amazonaws.com/main
+    newName: xxxxxxxxxxxx.dkr.ecr.ap-northeast-1.amazonaws.com/main
     newTag: latest
 #--------------------------------------------------
 # Base
@@ -17,8 +17,8 @@ images:
 bases:
   - ../../../base/deployment
 resources:
-  - target-group-binding.yaml
   - service.yaml
+  - secret-provider-class.yaml
 patchesStrategicMerge:
   - patch-deployment.yaml
 secretGenerator:

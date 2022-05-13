@@ -5,6 +5,8 @@ metadata:
 spec:
   template:
     spec:
+      # Service Account
+      serviceAccountName: test-app
       # 削除されるまでの猶予の時間。デフォルトは30秒
       terminationGracePeriodSeconds: 60
       # SecurityContext v1 Core
@@ -15,7 +17,24 @@ spec:
         # fsGroup: 2000
         # runAsNonRoot: true
       containers:
-        - name: pod
-          envFrom:
-            - secretRef:
-                name: secrets
+      - name: pod
+        envFrom:
+        - secretRef:
+            name: secrets
+        env:
+        - name: APP_DATABASE_MASTER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: secret-from-aws
+              key: app_database_master_password
+        volumeMounts:
+        - name: secrets-store-inline
+          mountPath: "/mnt/secrets-store"
+          readOnly: true
+      volumes:
+      - name: secrets-store-inline
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: test-app-secret-provider-class

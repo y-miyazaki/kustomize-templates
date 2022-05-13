@@ -1,3 +1,0 @@
-- op: replace
-  path: /metadata/name
-  value: nginx-load-balancer-microk8s-conf
