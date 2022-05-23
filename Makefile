@@ -12,9 +12,9 @@ push-ecr:
 create-base:
 	skaffold run -p dev-namespace
 	skaffold run -p local-infra
-	skaffold run -p dev-app
+	# skaffold run -p dev-app
 
 delete-base:
-	skaffold delete -p dev-app
+	# skaffold delete -p dev-app
 	skaffold delete -p local-infra
 	skaffold delete -p dev-namespace
