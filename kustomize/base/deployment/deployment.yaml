@@ -28,6 +28,12 @@ spec:
         # runAsGroup: 3000
         # fsGroup: 2000
         # runAsNonRoot: true
+      # for distroless
+      # securityContext:
+        # runAsUser: 65532
+        # runAsGroup: 65532
+        # fsGroup: 2000
+        # runAsNonRoot: true
       containers:
         - name: pod
           image: image:latest
