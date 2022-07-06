@@ -18,3 +18,13 @@ delete-base:
 	# skaffold delete -p dev-app
 	skaffold delete -p local-infra
 	skaffold delete -p dev-namespace
+
+create-local-base:
+	skaffold run -p local-namespace
+	skaffold run -p local-infra
+	skaffold run -p local-app
+
+delete-local-base:
+	skaffold delete -p local-app
+	skaffold delete -p local-infra
+	skaffold delete -p local-namespace

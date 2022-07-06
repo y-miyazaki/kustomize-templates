@@ -1,4 +1,5 @@
 # kustomize-templates
+
 Kustomize templates are compiled here.
 
 # Index
@@ -20,107 +21,139 @@ Kustomize templates are compiled here.
     - [Delete cluster](#delete-cluster)
 
 ## MinIO for local
-MinIO offers high-performance, S3 compatible object storage. It is created as a local environment.  
+
+MinIO offers high-performance, S3 compatible object storage. It is created as a local environment.
 
 https://min.io/
 
 - base  
-[kustomize/base/local/aws/s3](kustomize/base/local/aws/s3)
+  [kustomize/base/local/aws/s3](kustomize/base/local/aws/s3)
 - overlays  
-[kustomize/overlays/local/aws/s3](kustomize/overlays/local/aws/s3)
-- access  
+  [kustomize/overlays/local/aws/s3](kustomize/overlays/local/aws/s3)
+- access
   - s3-api  
-  http://localhost:30100
+    http://localhost:30100
   - s3-dashboard  
-  http://localhost:30101 minioroot/minioroot
+    http://localhost:30101 minioroot/minioroot
 
 ## MySQL for local
+
 MySQL is created as a local environment.
 
 - base  
-[kustomize/base/local/db/mysql](kustomize/base/local/db/mysql)
+  [kustomize/base/local/db/mysql](kustomize/base/local/db/mysql)
 - overlays  
-[kustomize/overlays/local/db/mysql](kustomize/overlays/local/db/mysql)
+  [kustomize/overlays/local/db/mysql](kustomize/overlays/local/db/mysql)
 - access  
-localhost:30306 root/rootpass
+  localhost:30306 root/rootpass
 
 ## Postgres for local
+
 Postgres is created as a local environment.
+
 - base  
-[kustomize/base/local/db/postgres](kustomize/base/local/db/postgres)
+  [kustomize/base/local/db/postgres](kustomize/base/local/db/postgres)
 - overlays  
-[kustomize/overlays/local/db/postgres](kustomize/overlays/local/db/postgres)
+  [kustomize/overlays/local/db/postgres](kustomize/overlays/local/db/postgres)
 - access  
-localhost:30432 admin/rootpass
+  localhost:30432 admin/rootpass
 
 ## Redis for local
-Redis is configured as a Master/Slave Cluster. It is created as a local environment.  
+
+Redis is configured as a Master/Slave Cluster. It is created as a local environment.
 
 https://redis.io/
 
 - base  
-[kustomize/base/local/redis](kustomize/base/local/redis)
+  [kustomize/base/local/redis](kustomize/base/local/redis)
 - overlays  
-[kustomize/overlays/local/redis](kustomize/overlays/local/redis)
-- access  
-  - master  
+  [kustomize/overlays/local/redis](kustomize/overlays/local/redis)
+- access
+  - master
     ```
     $ redis-cli -h localhost -p 30379 ping
     PONG
     ```
-  - slave  
+  - slave
     ```
     $ redis-cli -h localhost -p 30380 ping
     PONG
     ```
 
 ## ArgoCD for local
+
 Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes. The following example is set up for local use.
-It is designed to be accessed via Ingress from the traefik LoadBalancer included with K3d.  
+It is designed to be accessed via Ingress from the traefik LoadBalancer included with K3d.
 
 https://argo-cd.readthedocs.io/
 
 - base  
-[kustomize/base/argocd](kustomize/base/argocd)
+  [kustomize/base/argocd](kustomize/base/argocd)
 - overlays  
-[kustomize/overlays/local/argocd](kustomize/overlays/local/argocd)  
-[kustomize/overlays/local/ingress-argocd](kustomize/overlays/local/ingress-argocd)
+  [kustomize/overlays/local/argocd](kustomize/overlays/local/argocd)  
+  [kustomize/overlays/local/ingress-argocd](kustomize/overlays/local/ingress-argocd)
 - access  
-  http://argocd-server.local:8081/ admin/*****
+  http://argocd-server.local:8081/ admin/**\***
 
   The initial password can be obtained with the following command
+
   ```
   $ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d;
   ```
+
   Since argocd-server.local is the hostname for the distribution in Ingress, it must be added to /etc/hosts.
+
   ```
   $ echo 127.0.0.1 argocd-server.local >> /etc/hosts
   ```
 
 ## kube-prometheus for local
+
 kube-prometheus collects Kubernetes manifests, Grafana dashboards, and Prometheus rules combined with documentation and scripts to provide easy to operate end-to-end Kubernetes cluster monitoring with Prometheus using the Prometheus Operator.  
 The following example is set up for local use.
-It is designed to be accessed via Ingress from the traefik LoadBalancer included with K3d.  
+It is designed to be accessed via Ingress from the traefik LoadBalancer included with K3d.
 
 https://github.com/prometheus-operator/kube-prometheus
 
 - overlays  
-[kustomize/overlays/local/ingress-prometheus](kustomize/overlays/local/ingress-prometheus)
+  [kustomize/overlays/local/ingress-prometheus](kustomize/overlays/local/ingress-prometheus)
 - access  
-  http://prometheus-server.local:8081/ admin/*****
+  http://prometheus-server.local:8081/ admin/**\***
 
   Since prometheus-server.local is the hostname for the distribution in Ingress, it must be added to /etc/hosts.
+
   ```
   $ echo 127.0.0.1 prometheus-server.local >> /etc/hosts
+  ```
+
+## test application for local
+
+This is a test application that can be accessed via service using traefik (loadbalancer). It returns a simple response.
+
+- overlays  
+  [kustomize/overlays/local/test-app](kustomize/overlays/local/test-app)
+- access  
+  http://test-app.local:8081/hello
+
+  ```
+  $curl http://test-app.local:8081/hello
+  {"message":"Hello!"}
+  ```
+
+  Since test-app.local is the hostname for the distribution in Ingress, it must be added to /etc/hosts.
+
+  ```
+  $ echo 127.0.0.1 test-app.local >> /etc/hosts
   ```
 
 # Kubernetes distribution
 
 # k3d
-k3d is a lightweight wrapper to run k3s (Rancher Lab’s minimal Kubernetes distribution) in docker.  
-  
-k3d makes it very easy to create single- and multi-node k3s clusters in docker, e.g. for local development on Kubernetes.  
-  
+
+k3d is a lightweight wrapper to run k3s (Rancher Lab’s minimal Kubernetes distribution) in docker.
+
+k3d makes it very easy to create single- and multi-node k3s clusters in docker, e.g. for local development on Kubernetes.
+
 Note: k3d is a community-driven project, that is supported by Rancher (SUSE) and it’s not an official Rancher (SUSE) product.
 
 https://k3d.io/
@@ -133,52 +166,52 @@ $ ./scripts/install_k3d.sh
 # Install: k3d
 #-----------------------------------------
 #-----------------------------------------
-# Version: k3d 
+# Version: k3d
 #-----------------------------------------
 k3d version v5.0.0
 k3s version v1.21.5-k3s1 (default)
 ```
 
 ## Config cluster
-The config for creating a K3d cluster is the following file. If you want to modify it depending on your environment, please modify the following file. Document is [here](https://k3d.io/v5.0.0/usage/configfile/
-).
+
+The config for creating a K3d cluster is the following file. If you want to modify it depending on your environment, please modify the following file. Document is [here](https://k3d.io/v5.0.0/usage/configfile/).
 
 [distribution/k3d/config/k3d-config.yaml](distribution/k3d/config/k3d-config.yaml)
 
-
 ## Create cluster
+
 ```
 $ cd distribution/k3d
 $ make create
 
 mkdir -p /Users/yourname/k3d/data
 k3d cluster create local-cluster --config config/k3d-config.yaml
-INFO[0000] Using config file config/k3d-config.yaml (k3d.io/v1alpha3#simple) 
-INFO[0000] portmapping '8081:80' targets the loadbalancer: defaulting to [servers:*:proxy agents:*:proxy] 
-INFO[0000] Prep: Network                                
-INFO[0000] Created network 'k3d-local-cluster'          
-INFO[0000] Created volume 'k3d-local-cluster-images'    
-INFO[0000] Creating node 'registry.localhost'           
-INFO[0000] Successfully created registry 'registry.localhost' 
-INFO[0000] Starting new tools node...                   
-INFO[0000] Starting Node 'k3d-local-cluster-tools'      
-INFO[0001] Creating node 'k3d-local-cluster-server-0'   
-INFO[0001] Creating node 'k3d-local-cluster-agent-0'    
-INFO[0001] Creating LoadBalancer 'k3d-local-cluster-serverlb' 
-INFO[0001] Using the k3d-tools node to gather environment information 
-INFO[0002] Starting cluster 'local-cluster'             
-INFO[0002] Starting servers...                          
-INFO[0002] Deleted k3d-local-cluster-tools              
-INFO[0003] Starting Node 'k3d-local-cluster-server-0'   
-INFO[0009] Starting agents...                           
-INFO[0010] Starting Node 'k3d-local-cluster-agent-0'    
-INFO[0022] Starting helpers...                          
-INFO[0022] Starting Node 'registry.localhost'           
-INFO[0022] Starting Node 'k3d-local-cluster-serverlb'   
-INFO[0053] Injecting record '192.168.65.2 host.k3d.internal'... 
-INFO[0061] Cluster 'local-cluster' created successfully! 
-INFO[0061] --kubeconfig-update-default=false --> sets --kubeconfig-switch-context=false 
-INFO[0061] You can now use it like this:                
+INFO[0000] Using config file config/k3d-config.yaml (k3d.io/v1alpha3#simple)
+INFO[0000] portmapping '8081:80' targets the loadbalancer: defaulting to [servers:*:proxy agents:*:proxy]
+INFO[0000] Prep: Network
+INFO[0000] Created network 'k3d-local-cluster'
+INFO[0000] Created volume 'k3d-local-cluster-images'
+INFO[0000] Creating node 'registry.localhost'
+INFO[0000] Successfully created registry 'registry.localhost'
+INFO[0000] Starting new tools node...
+INFO[0000] Starting Node 'k3d-local-cluster-tools'
+INFO[0001] Creating node 'k3d-local-cluster-server-0'
+INFO[0001] Creating node 'k3d-local-cluster-agent-0'
+INFO[0001] Creating LoadBalancer 'k3d-local-cluster-serverlb'
+INFO[0001] Using the k3d-tools node to gather environment information
+INFO[0002] Starting cluster 'local-cluster'
+INFO[0002] Starting servers...
+INFO[0002] Deleted k3d-local-cluster-tools
+INFO[0003] Starting Node 'k3d-local-cluster-server-0'
+INFO[0009] Starting agents...
+INFO[0010] Starting Node 'k3d-local-cluster-agent-0'
+INFO[0022] Starting helpers...
+INFO[0022] Starting Node 'registry.localhost'
+INFO[0022] Starting Node 'k3d-local-cluster-serverlb'
+INFO[0053] Injecting record '192.168.65.2 host.k3d.internal'...
+INFO[0061] Cluster 'local-cluster' created successfully!
+INFO[0061] --kubeconfig-update-default=false --> sets --kubeconfig-switch-context=false
+INFO[0061] You can now use it like this:
 kubectl config use-context k3d-local-cluster
 kubectl cluster-info
 kubectl cluster-info
@@ -203,50 +236,53 @@ kube-system   helm-install-traefik-nkp4b                0/1     Completed       
 ```
 
 ## Stop cluster
+
 ```
 $ cd distribution/k3d
 $ make stop
 
 k3d cluster stop local-cluster
-INFO[0000] Stopping cluster 'local-cluster'             
-INFO[0026] Stopped cluster 'local-cluster'              
+INFO[0000] Stopping cluster 'local-cluster'
+INFO[0026] Stopped cluster 'local-cluster'
 ```
 
 ## Start cluster
+
 ```
 $ cd distribution/k3d
 $ make start
 
 k3d cluster start local-cluster
-INFO[0000] Using the k3d-tools node to gather environment information 
-INFO[0000] Starting new tools node...                   
-INFO[0000] Starting Node 'k3d-local-cluster-tools'      
-INFO[0000] Starting cluster 'local-cluster'             
-INFO[0000] Starting servers...                          
-INFO[0000] Deleted k3d-local-cluster-tools              
-INFO[0001] Starting Node 'k3d-local-cluster-server-0'   
-INFO[0005] Starting agents...                           
-INFO[0006] Starting Node 'k3d-local-cluster-agent-0'    
-INFO[0013] Starting helpers...                          
-INFO[0013] Starting Node 'registry.localhost'           
-INFO[0013] Starting Node 'k3d-local-cluster-serverlb'   
-INFO[0041] Injecting record '192.168.65.2 host.k3d.internal'... 
+INFO[0000] Using the k3d-tools node to gather environment information
+INFO[0000] Starting new tools node...
+INFO[0000] Starting Node 'k3d-local-cluster-tools'
+INFO[0000] Starting cluster 'local-cluster'
+INFO[0000] Starting servers...
+INFO[0000] Deleted k3d-local-cluster-tools
+INFO[0001] Starting Node 'k3d-local-cluster-server-0'
+INFO[0005] Starting agents...
+INFO[0006] Starting Node 'k3d-local-cluster-agent-0'
+INFO[0013] Starting helpers...
+INFO[0013] Starting Node 'registry.localhost'
+INFO[0013] Starting Node 'k3d-local-cluster-serverlb'
+INFO[0041] Injecting record '192.168.65.2 host.k3d.internal'...
 ```
 
 ### Delete cluster
+
 ```
 $ cd distribution/k3d
 $ make delete
 
 k3d cluster delete local-cluster
-INFO[0000] Deleting cluster 'local-cluster'             
-INFO[0021] Deleted k3d-local-cluster-serverlb           
-INFO[0022] Deleted k3d-local-cluster-agent-0            
-INFO[0022] Deleted k3d-local-cluster-server-0           
-INFO[0023] Deleted registry.localhost                   
-INFO[0023] Deleting cluster network 'k3d-local-cluster' 
-INFO[0023] Deleting image volume 'k3d-local-cluster-images' 
-INFO[0023] Removing cluster details from default kubeconfig... 
-INFO[0023] Removing standalone kubeconfig file (if there is one)... 
-INFO[0023] Successfully deleted cluster local-cluster!  
+INFO[0000] Deleting cluster 'local-cluster'
+INFO[0021] Deleted k3d-local-cluster-serverlb
+INFO[0022] Deleted k3d-local-cluster-agent-0
+INFO[0022] Deleted k3d-local-cluster-server-0
+INFO[0023] Deleted registry.localhost
+INFO[0023] Deleting cluster network 'k3d-local-cluster'
+INFO[0023] Deleting image volume 'k3d-local-cluster-images'
+INFO[0023] Removing cluster details from default kubeconfig...
+INFO[0023] Removing standalone kubeconfig file (if there is one)...
+INFO[0023] Successfully deleted cluster local-cluster!
 ```

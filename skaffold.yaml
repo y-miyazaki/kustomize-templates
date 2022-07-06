@@ -99,7 +99,7 @@ profiles:
   deploy:
     kustomize:
       defaultNamespace: app
-      paths: 
+      paths:
         - kustomize/overlays/dev/test-app
 #--------------------------------------------------
 # dev: Infra
