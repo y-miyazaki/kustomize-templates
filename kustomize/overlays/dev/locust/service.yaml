@@ -1,0 +1,24 @@
+---
+#--------------------------------------------------------------
+# Service
+# https://kubernetes.io/ja/docs/concepts/services-networking/service/
+#--------------------------------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc
+spec:
+  type: ClusterIP
+  ports:
+    - name: master-web
+      protocol: TCP
+      port: 8089
+      targetPort: 8089
+    - name: master-p1
+      protocol: TCP
+      port: 5557
+      targetPort: 5557
+    - name: master-p2
+      protocol: TCP
+      port: 5558
+      targetPort: 5558

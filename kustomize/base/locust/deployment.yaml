@@ -1,0 +1,168 @@
+---
+#--------------------------------------------------------------
+# Deployment: locust-master
+# https://kubernetes.io/ja/docs/concepts/workloads/controllers/deployment/
+#--------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: locust-master
+  name: locust-master
+spec:
+  # Rolling Update
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # 理想状態のPod数を超えて作成できる最大のPod数
+      maxSurge: 1
+      # 更新処理において利用不可となる最大のPod数
+      maxUnavailable: 1
+  # PodTemplate, もし変更があるとRollingUpdateが開始される
+  selector:
+    matchLabels:
+      app: locust-master
+  template:
+    metadata:
+      labels:
+        app: locust-master
+    spec:
+      # 削除されるまでの猶予の時間。デフォルトは30秒
+      terminationGracePeriodSeconds: 60
+      # SecurityContext v1 Core
+      # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#securitycontext-v1-core
+      # securityContext:
+      # runAsUser: 1000
+      # runAsGroup: 3000
+      # fsGroup: 2000
+      # runAsNonRoot: true
+      # for distroless
+      # securityContext:
+      # runAsUser: 65532
+      # runAsGroup: 65532
+      # fsGroup: 2000
+      # runAsNonRoot: true
+      containers:
+        - name: locust-master
+          image: locust:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 100m
+              memory: 256Mi
+          ports:
+            - containerPort: 8089
+              name: master-web
+              protocol: TCP
+            - containerPort: 5557
+              name: master-p1
+              protocol: TCP
+            - containerPort: 5558
+              name: master-p2
+              protocol: TCP
+          env:
+            - name: LOCUST_MODE
+              value: master
+            - name: TARGET_HOST
+              value: http://knowledge-service
+          # readinessProbe:
+          #   # an http probe
+          #   httpGet:
+          #     path: /healthcheck
+          #     port: 80
+          #     httpHeaders:
+          #       - name: X-Health-Check
+          #         value: health-check
+          #   # Probe開始までの秒数
+          #   initialDelaySeconds: 30
+          #   # Probeの間隔を秒単位で指定する。デフォルトは10秒で最小の値は1秒
+          #   periodSeconds: 30
+          #   # Probeがタイムアウトするまでの秒数。デフォルトは1秒で最小の値は1秒
+          #   timeoutSeconds: 5
+          #   # Probeが失敗したと判断する最小回数を指定。デフォルトは3回
+          #   failureThreshold: 5
+          #   # Probeが成功したと判断する最小回数を指定。デフォルトは1回
+          #   successThreshold: 1
+---
+#--------------------------------------------------------------
+# Deployment: locust-master
+# https://kubernetes.io/ja/docs/concepts/workloads/controllers/deployment/
+#--------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: locust-worker
+  name: locust-worker
+spec:
+  # Rolling Update
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # 理想状態のPod数を超えて作成できる最大のPod数
+      maxSurge: 1
+      # 更新処理において利用不可となる最大のPod数
+      maxUnavailable: 1
+  # PodTemplate, もし変更があるとRollingUpdateが開始される
+  selector:
+    matchLabels:
+      app: locust-worker
+  template:
+    metadata:
+      labels:
+        app: locust-worker
+    spec:
+      # 削除されるまでの猶予の時間。デフォルトは30秒
+      terminationGracePeriodSeconds: 60
+      # SecurityContext v1 Core
+      # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#securitycontext-v1-core
+      # securityContext:
+      # runAsUser: 1000
+      # runAsGroup: 3000
+      # fsGroup: 2000
+      # runAsNonRoot: true
+      # for distroless
+      # securityContext:
+      # runAsUser: 65532
+      # runAsGroup: 65532
+      # fsGroup: 2000
+      # runAsNonRoot: true
+      containers:
+        - name: locust-worker
+          image: locust:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 100m
+              memory: 256Mi
+          env:
+            - name: LOCUST_MODE
+              value: worker
+            - name: LOCUST_MASTER
+              value: locust-master
+            - name: TARGET_HOST
+              value: http://knowledge-service
+          # readinessProbe:
+          #   # an http probe
+          #   httpGet:
+          #     path: /healthcheck
+          #     port: 80
+          #     httpHeaders:
+          #       - name: X-Health-Check
+          #         value: health-check
+          #   # Probe開始までの秒数
+          #   initialDelaySeconds: 30
+          #   # Probeの間隔を秒単位で指定する。デフォルトは10秒で最小の値は1秒
+          #   periodSeconds: 30
+          #   # Probeがタイムアウトするまでの秒数。デフォルトは1秒で最小の値は1秒
+          #   timeoutSeconds: 5
+          #   # Probeが失敗したと判断する最小回数を指定。デフォルトは3回
+          #   failureThreshold: 5
+          #   # Probeが成功したと判断する最小回数を指定。デフォルトは1回
+          #   successThreshold: 1

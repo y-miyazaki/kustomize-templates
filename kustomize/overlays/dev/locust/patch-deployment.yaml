@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment
+spec:
+  selector:
+    matchLabels:
+      app: test
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      # Service Account
+      serviceAccountName: test-app
+      # 削除されるまでの猶予の時間。デフォルトは30秒
+      terminationGracePeriodSeconds: 60
+      # SecurityContext v1 Core
+      # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#securitycontext-v1-core
+      securityContext:
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 2000
+        runAsNonRoot: true
+      containers:
+      - name: pod
+        envFrom:
+        - secretRef:
+            name: secrets
+        env:
+        - name: APP_DATABASE_MASTER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: secret-from-aws
+              key: app_database_master_password
+        volumeMounts:
+        - name: secrets-store-inline
+          mountPath: "/mnt/secrets-store"
+          readOnly: true
+      volumes:
+      - name: secrets-store-inline
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: test-app-secret-provider-class
