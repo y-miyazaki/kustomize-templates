@@ -19,10 +19,14 @@ spec:
       # 削除されるまでの猶予の時間。デフォルトは30秒
       terminationGracePeriodSeconds: 60
       containers:
-        - image: minio/minio
+        # https://min.io/docs/minio/linux/operations/install-deploy-manage/migrate-fs-gateway.html
+        - image: minio/minio:RELEASE.2022-10-24T18-35-07Z
           name: s3
-          command: ["/bin/sh","-c"]
-          args: ["mkdir -p /data/bucket; /usr/bin/docker-entrypoint.sh server /data --console-address ':9001'"]
+          command: ["/bin/sh", "-c"]
+          args:
+            [
+              "mkdir -p /data/bucket; /usr/bin/docker-entrypoint.sh server /data --console-address ':9001'",
+            ]
           ports:
             - containerPort: 9000
               name: s3-api
